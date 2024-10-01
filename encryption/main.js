@@ -3,7 +3,7 @@ const { encryptWithPublic } = require("./encrypt.js");
 const { decryptWithPrivate } = require("./decrypt.js");
 const fs = require("fs");
 const crypto = "/crypto";
-const  { createHmac } = require('crypto')
+const  { createHmac, createSign, createVerify } = require('crypto')
 
 genKeys();
 
@@ -58,4 +58,20 @@ getHmac()
 // SHA3-256	         136	32
 // SHA3-384	         104	48
 // SHA3-512	         72	64[6]
+
+// creating signatures
+const data2Sign = 'data 2 sign'
+const signer = createSign('rsa-sha256')
+signer.update(data2Sign)
+const signature = signer.sign(private,'hex')
+
+console.log(signature)
+
+// verify signatures
+
+const verifier  = createVerify('rsa-sha256');
+verifier.update(data2Sign)
+const isVerified = verifier.verify(public, signature, 'hex')
+console.log(isVerified)
+
 
