@@ -3,8 +3,10 @@ const { encryptWithPublic } = require("./encrypt.js");
 const { decryptWithPrivate } = require("./decrypt.js");
 const fs = require("fs");
 const crypto = "/crypto";
-const  { createHmac, createSign, createVerify } = require('crypto')
+const  { createHmac, createSign, createVerify, randomBytes, createCipheriv, createDecipheriv } = require('crypto')
 
+
+// generate keys
 genKeys();
 
 // get public key
@@ -25,15 +27,40 @@ readDir.forEach((d, i) => {
   }
 });
 
-const encode = encryptWithPublic(public, "fuck this");
+// encrypt and decrypt message
+// create variables to throw in the encryption-blender
+const msg = ['I am a beauiful Squirrel','eat my cheeseCake!','Life is good'][Math.floor(Math.random() * 3)]
+const ky = randomBytes(32)
+const iv = randomBytes(16)
+const cipher = createCipheriv('aes-256-gcm', ky, iv);
+// encryption blender - basic concept of encrypting and decrypting data
+const encryptionBlender = cipher.update(msg, 'utf-8','hex') + cipher.final('hex');
+// console.log(encryptionBlender)
+console.log("")
+
+const encryptedData = encryptWithPublic(public,Buffer.from(msg))
+console.log('ciphered data')
+console.log(encryptedData.toString('hex'))
+console.log("")
+
+// decrypt the encrypted data
+const decryptedData = decryptWithPrivate(private,encryptedData)
+console.log('deciphered data')
+console.log(decryptedData.toString('utf-8'))
+console.log("")
+
+
+// const randomtext = "random-text";
+const encode = encryptWithPublic(public, msg);
 const decode = decryptWithPrivate(private, encode)
 
+console.log("encryption process")
 let encryptionProcess = [encode,decode].reduce((a,b)=>{
     console.log(a+"\n\n"+b)
-    return a+"\n\n"+b
 })
-
+console.log("")
 // hash based message authentication code
+console.log("HMAC process")
 const getHmac = () => {
   const key = 'hMac-K3y'
   const data = 'Hello World this is data'
