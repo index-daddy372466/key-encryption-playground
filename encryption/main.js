@@ -3,7 +3,7 @@ const { encryptWithPublic } = require("./encrypt.js");
 const { decryptWithPrivate } = require("./decrypt.js");
 const fs = require("fs");
 const crypto = "/crypto";
-const  { createHmac, createSign, createVerify, randomBytes, createCipheriv, createDecipheriv } = require('crypto')
+const  { createHmac, createSign, createVerify, scryptSync, randomBytes, createCipheriv, createDecipheriv, timingSafeEqual } = require('crypto')
 
 
 // generate keys
@@ -30,16 +30,17 @@ readDir.forEach((d, i) => {
 // encrypt and decrypt message
 // create variables to throw in the encryption-blender
 const msg = ['I am a beauiful Squirrel','eat my cheeseCake!','Life is good'][Math.floor(Math.random() * 3)]
+const sampleobj = JSON.stringify({ok:'wow'})
 const ky = randomBytes(32)
 const iv = randomBytes(16)
 const cipher = createCipheriv('aes-256-gcm', ky, iv);
 // encryption blender - basic concept of encrypting and decrypting data
-const encryptionBlender = cipher.update(msg, 'utf-8','hex') + cipher.final('hex');
+const encryptionBlender = cipher.update(sampleobj, 'utf-8','hex') + cipher.final('hex');
 // console.log(encryptionBlender)
 console.log("")
 
 
-const encryptedData = encryptWithPublic(public,Buffer.from(msg))
+const encryptedData = encryptWithPublic(public,Buffer.from(sampleobj))
 console.log('ciphered data')
 console.log(encryptedData.toString('hex'))
 console.log("")
@@ -47,12 +48,12 @@ console.log("")
 // decrypt the encrypted data
 const decryptedData = decryptWithPrivate(private,encryptedData)
 console.log('deciphered data')
-console.log(decryptedData.toString('utf-8'))
+console.log(JSON.parse(decryptedData.toString('utf-8')))
 console.log("")
 
 
 // const randomtext = "random-text";
-const encode = encryptWithPublic(public, msg);
+const encode = encryptWithPublic(public, Buffer.from(sampleobj));
 const decode = decryptWithPrivate(private, encode)
 
 console.log("encryption process")
@@ -72,6 +73,7 @@ const getHmac = () => {
 }
 
 getHmac()
+console.log("")
 
 // Hash function H	b, bytes	L, bytes
 // MD5	             64	16
@@ -92,7 +94,7 @@ const data2Sign = 'data 2 sign'
 const signer = createSign('rsa-sha256')
 signer.update(data2Sign)
 const signature = signer.sign(private,'hex')
-
+console.log("signature")
 console.log(signature)
 
 // verify signatures
@@ -103,3 +105,46 @@ const isVerified = verifier.verify(public, signature, 'hex')
 console.log(isVerified)
 
 
+// login with salt and hash
+const users = []
+console.log('signup')
+function signup(email,password){
+  const salt = randomBytes(16).toString('hex')
+  // console.log('salt = '+salt)
+  const hashed = scryptSync(password,salt,64).toString('hex')
+  // console.log('hashed = '+hashed)
+  const user = {email,password:`${salt}:${hashed}`}
+  users.push(user)
+  console.log(users)
+}
+console.log("")
+console.log('login')
+function login(email,password){
+  const getUsers = [...users].find(u=>u.email===email)
+
+  if(getUsers){
+    const [salt,key] = getUsers.password.split(':')
+    const hashedBuff = scryptSync(password,salt,64)
+    const keyBuffer = Buffer.from(key,'hex')
+    const match = timingSafeEqual(hashedBuff,keyBuffer)
+    if(!match){
+      console.log('username of password failed')
+    } else {
+      console.log('login success!')
+    }
+  }
+  else {
+    console.log('username of password failed')
+  }
+
+}
+const failureExample = () => {
+  signup('kyle@user.net','pw123')
+  login('kyle@user.net','wrongpassword')
+}
+const successExample = () => {
+  signup('kyle@user.io','newpw123')
+  login('kyle@user.io','newpw123')
+}
+failureExample()
+successExample()
