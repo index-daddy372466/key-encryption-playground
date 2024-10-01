@@ -38,6 +38,7 @@ const encryptionBlender = cipher.update(msg, 'utf-8','hex') + cipher.final('hex'
 // console.log(encryptionBlender)
 console.log("")
 
+
 const encryptedData = encryptWithPublic(public,Buffer.from(msg))
 console.log('ciphered data')
 console.log(encryptedData.toString('hex'))
