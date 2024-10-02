@@ -49,24 +49,39 @@ app.route("/").get((req, res) => {
   res.render("index.ejs");
 });
 
+let key,iv
 app.route("/api/encrypt").post((req, res) => {
-  // encrypt the message
-  if(req.session){
     const { encrypt } = req.body
     console.log(encrypt)
+  // encrypt the message
+
+  if(req.session){
+    key = randomBytes(32)
+    iv = randomBytes(16)
+    console.log(key)
+    console.log(iv)
+
+    const cipher = createCipheriv('aes-256-gcm',key,iv)
+    const encryptedMessage = cipher.update(encrypt,'utf-8','hex')+cipher.final("hex");
+    res.json({message:encryptedMessage})
   }
 });
 
 app.route("/api/decrypt").post((req, res) => {
-  // decrypt message
-  if(req.session){
     const { decrypt } = req.body
     console.log(decrypt)
+    console.log(key)
+    console.log(iv)
+
+  // decrypt message
+  if(req.session){
+    const decipher = createDecipheriv('aes-256-gcm',key,iv)
+    const decryptedMessage = Buffer.from(decipher.update(Buffer.from(decrypt,'hex'),'utf-8'))
+    res.json({message:decryptedMessage.toString()})
   }
 });
 
 
-let currid;
 // encrypt users
 function encryptUsers(req, res, next) {
     let newdate = new Date()
