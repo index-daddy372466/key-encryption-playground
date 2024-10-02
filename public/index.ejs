@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>encryptor</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="wrapper">
-
-    <!-- encrypt data -->
+      <!-- encrypt data -->
+      <form method="POST" action="/api/encrypt">
         <div id="encrypt-container">
-            <input type="text" name="encrypt" id="encrypt-input">
-            <p id="encrypt-para"></p>
+          <input type="text" name="encrypt" id="encrypt-input" />
+          <button>encrypt</button>
+          <p id="encrypt-para"></p>
         </div>
-    <!-- decrypt data -->
+      </form>
+      <!-- decrypt data -->
+      <form method="POST" action="/api/decrypt">
         <div id="decrypt-container">
-            <input type="text" name="decrypt" id="decrypt-input">
-            <p id="decrypt-para"></p>
+          <input type="text" name="decrypt" id="decrypt-input" />
+          <button>decrypt</button>
+          <p id="decrypt-para"></p>
         </div>
-        </div>
-    
-</body>
+      </form>
+    </div>
+  </body>
+  <script type="module" src="main.js"></script>
 </html>
