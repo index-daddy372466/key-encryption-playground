@@ -49,33 +49,36 @@ app.route("/").get((req, res) => {
   res.render("index.ejs");
 });
 
-let key,iv
 app.route("/api/encrypt").post((req, res) => {
     const { encrypt } = req.body
     console.log(encrypt)
   // encrypt the message
 
   if(req.session){
-    key = randomBytes(32)
-    iv = randomBytes(16)
-    console.log(key)
-    console.log(iv)
-
-    const cipher = createCipheriv('aes-256-gcm',key,iv)
+    req.session.key = randomBytes(32)
+    req.session.iv = randomBytes(16)
+    console.log(req.session.key)
+    console.log(req.session.iv)
+    const cipher = createCipheriv('aes-256-gcm',req.session.key,req.session.iv)
     const encryptedMessage = cipher.update(encrypt,'utf-8','hex')+cipher.final("hex");
     res.json({message:encryptedMessage})
   }
 });
+const organizeBuffer = (variable) => {
+    let buff
+    const {type,data} = variable
+    buff = `<${type} ${[...data].join(" ")}>`
+    console.log(buff)
+    return buff
 
+}
 app.route("/api/decrypt").post((req, res) => {
     const { decrypt } = req.body
     console.log(decrypt)
-    console.log(key)
-    console.log(iv)
 
   // decrypt message
   if(req.session){
-    const decipher = createDecipheriv('aes-256-gcm',key,iv)
+    const decipher = createDecipheriv('aes-256-gcm',Buffer.from(req.session.key),Buffer.from(req.session.iv))
     const decryptedMessage = Buffer.from(decipher.update(Buffer.from(decrypt,'hex'),'utf-8'))
     res.json({message:decryptedMessage.toString()})
   }
