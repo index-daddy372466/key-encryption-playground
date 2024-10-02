@@ -17,6 +17,8 @@ decrypt.addEventListener('click',async e=>{
     e.preventDefault()
     let inp = e.target.parentElement.children[0]
     await fetch(dec,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decrypt:!inp.value?undefined:inp.value})})
-    .then(r=>r.json())
+    .then(r=>{
+        return r.json()
+    })
     .then(d=>console.log(d.message))
 })

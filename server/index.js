@@ -16,7 +16,7 @@ app.use(express.static(path.resolve(__dirname, "../public")));
 app.use(
   cookiesesh({
     name: "session",
-    maxAge: 10000,
+    maxAge: 60000,
     secret: "dont use this secret example",
     priority: "medium",
     secure: false,
@@ -76,24 +76,33 @@ app.route("/api/decrypt").post((req, res) => {
     const { decrypt } = req.body
     console.log(decrypt)
 
-  // decrypt message
-  if(req.session){
+  try{
+    // decrypt message
+    if(req.session){
     const decipher = createDecipheriv('aes-256-gcm',Buffer.from(req.session.key),Buffer.from(req.session.iv))
     const decryptedMessage = Buffer.from(decipher.update(Buffer.from(decrypt,'hex'),'utf-8'))
     res.json({message:decryptedMessage.toString()})
+  }
+  }
+  catch(err){
+    console.log(err.code)
+    res.json({message:'err'})
   }
 });
 
 
 // encrypt users
 function encryptUsers(req, res, next) {
-    let newdate = new Date()
-    let id = newdate.getTime().toString();
-    // encrypt the date with a cipher
-    let key = randomBytes(32);
-    let salt = randomBytes(16);
-    if(req.session){
-        req.session.id = createId(id,key,salt)
+    let paths = ['/api/decrypt','/api/encrypt']
+    if(!paths.includes(req.path)){
+        let newdate = new Date()
+        let id = newdate.getTime().toString();
+        // encrypt the date with a cipher
+        let key = randomBytes(32);
+        let salt = randomBytes(16);
+        if(req.session){
+            req.session.id = createId(id,key,salt)
+        }
     }
     next()
 }
