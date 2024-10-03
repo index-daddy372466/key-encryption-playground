@@ -59,6 +59,7 @@ encrypt.addEventListener('click',async e=>{
         d.message == 'err' ? errText(epara) : regText(epara)
     })
     clearTextarea(etextarea)
+    etextarea.focus()
     
 })
 decrypt.addEventListener('click',async e=>{
@@ -74,6 +75,18 @@ decrypt.addEventListener('click',async e=>{
         d.message == 'err' ? errText(dpara) : regText(dpara)
     })
     clearTextarea(dtextarea)
+})
+
+let decAndenc = [decrypt,encrypt]
+decAndenc.forEach(btn =>{
+    btn.onfocus = e => {
+        if(e.currentTarget == btn)
+        e.currentTarget.classList.add('focus-true')
+    }
+    btn.onblur = e => {
+        if(e.currentTarget == btn)
+         e.currentTarget.classList.remove('focus-true')
+    }
 })
 
 // copy paragraphs
