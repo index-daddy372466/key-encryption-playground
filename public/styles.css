@@ -93,10 +93,14 @@ form{
 
 }
 
-
+.black-text{
+    color:#000;
+}
+.red-text{
+    color:#f00;
+}
 /* para */
 .para{
-    color:#000;
     z-index:999;
     position:absolute;
     letter-spacing: .75px;

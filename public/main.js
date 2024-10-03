@@ -19,11 +19,16 @@ function clearTextarea(textarea){
    clear = setTimeout(()=>textarea.value = '',5000)
 }
 function clearWhiteSpaces(text){
-    console.log(text.replace(/(^\s{0,2}|\s{0,2}$)/g,''))
-    return text.replace(/(^\s{0,2}|\s{0,2}$)/g,'')
+    return text.replace(/(^\s+|\s+$)/g,'')
 }
-
-
+function errText(elem){
+    elem.classList.remove('black-text')
+    elem.classList.add('red-text')
+}
+function regText(elem){
+    elem.classList.add('black-text')
+    elem.classList.remove('red-text')
+}
 
 // input event
 [dtextarea,etextarea].forEach(d=>{
@@ -43,7 +48,8 @@ encrypt.addEventListener('click',async e=>{
     .then(d=>{
         console.log(d.message)
         // store encryption value
-        epara.textContent = d.message
+        epara.textContent = !d.message || d.message == 'err' ? 'No data entered' : d.message
+        d.message == 'err' ? errText(epara) : regText(epara)
     })
     clearTextarea(etextarea)
     
@@ -53,13 +59,12 @@ decrypt.addEventListener('click',async e=>{
     e.preventDefault()
     let inp = e.target.parentElement.children[0]
     await fetch(dec,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decrypt:!inp.value?undefined:clearWhiteSpaces(inp.value),encrypt:epara.textContent})})
-    .then(r=>{
-        return r.json()
-    })
+    .then(r=>r.json())
     .then(d=>{
         console.log(d.message)
         // store decryption value
         dpara.textContent = d.message == 'err' ? 'Either your session ended, or the encryption key needs attention' : d.message
+        d.message == 'err' ? errText(dpara) : regText(dpara)
     })
     clearTextarea(dtextarea)
 })
