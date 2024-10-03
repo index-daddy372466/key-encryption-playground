@@ -99,21 +99,41 @@ form{
     color:#f00;
 }
 /* para */
-.para{
+.shadow{
     z-index:999;
+    background:transparent;
+    height:75px;
+    transition: .25s;
+    border:none;
+    display:flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: start;
+}
+.shadow:hover{
+    background:rgba(247, 247, 247, 0.19);
+    cursor:pointer;
+}
+.para{
+    z-index:998;
+}
+.para,.shadow{
     position:absolute;
     letter-spacing: .75px;
     width:200px;
-    /* border:2px solid red; */
     resize:none;
     border-radius: 12px;
     padding:.5rem;
 }
-#decrypt-para{
+
+.copy-click{
+ color:ghostwhite;
+}
+#decrypt-para,.shadow-dec{
     bottom:-6rem;
 }
 
-#encrypt-para{
+#encrypt-para,.shadow-enc{
     top:-6rem;
 }
 

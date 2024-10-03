@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/4026a653d4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="styles.css" />
     <title>encryptor</title>
   </head>
@@ -10,6 +11,9 @@
     <div id="wrapper">
       <div id="form-wrapper">
         <!-- encrypt data -->
+        <div class="shadow shadow-enc">
+          <i class="fa-regular fa-copy"></i>
+        </div>
         <textarea class="para black-text" rows="4" cols="8" id="encrypt-para" disabled></textarea>
 
         <form method="POST" action="/api/encrypt">
@@ -19,6 +23,9 @@
           </div>
         </form>
         <!-- decrypt data -->
+        <div class="shadow shadow-dec">
+          <i class="fa-regular fa-copy"></i>
+        </div>
         <textarea class="para black-text" rows="4" cols="8" id="decrypt-para" disabled></textarea>
 
         <form method="POST" action="/api/decrypt">

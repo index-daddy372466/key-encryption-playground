@@ -4,7 +4,8 @@ let dec = '/api/decrypt'
 const encrypt = document.getElementById('encrypt')
 const decrypt = document.getElementById('decrypt')
 const formwrapper = document.getElementById('form-wrapper')
-const paras = document.querySelectorAll('.para')
+let paras = document.querySelectorAll('.para')
+let shadows = document.querySelectorAll('.shadow')
 const epara = document.getElementById('encrypt-para')
 const dpara = document.getElementById('decrypt-para')
 const dtextarea = document.getElementById('decrypt-input')
@@ -12,11 +13,13 @@ const etextarea = document.getElementById('encrypt-input')
 let clear;
 window.onload = e => {
     const elemX = formwrapper.clientWidth / 2
-    return [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    shadows = [...shadows].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 }
 window.onresize = e => {
     const elemX = formwrapper.clientWidth / 2
-    return [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    shadows = [...shadows].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 }
 
 function clearTextarea(textarea){
@@ -71,5 +74,21 @@ decrypt.addEventListener('click',async e=>{
         d.message == 'err' ? errText(dpara) : regText(dpara)
     })
     clearTextarea(dtextarea)
+})
+
+// copy paragraphs
+
+shadows.forEach((par,i)=>{
+    let realparas = [epara,dpara]
+    const copy = [...document.querySelectorAll('.fa-copy')]
+    par.onclick = e => {
+        console.log('paragraph clicked!')
+        console.log(realparas[i].value)
+        navigator.clipboard.writeText(realparas[i].value);
+        copy[i].classList.add('copy-click')
+        setTimeout(()=>{
+            copy[i].classList.remove('copy-click')
+        },150)
+    }
 })
 
