@@ -1,10 +1,18 @@
+require('dotenv').config()
 const express = require("express");
 const app = express();
 PORT = 3423;
 const cors = require("cors");
+const fs = require('fs')
 const path = require("path");
 const cookiesesh = require("cookie-session");
-const { createCipheriv, createDecipheriv, randomBytes } = require("crypto");
+const genKeys = require('../encryption/genKeys.js')
+const { createCipheriv, createHmac, createDecipheriv, randomBytes } = require("crypto");
+// generage pub key
+genKeys()
+// read pub key file and allocate 32 bytes from the file
+// store buffer in pubKey variable
+pubKey = Buffer.alloc(32,fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_pub.pem'),{encoding:'utf-8'}))
 // middleware
 app.set("views", path.resolve(__dirname, "../public"));
 app.set("view engine", "ejs");
@@ -55,8 +63,16 @@ app.route("/api/encrypt").post((req, res) => {
   // encrypt the message
   try {
     if (req.session && encrypt) {
-      req.session.key = randomBytes(32);
-        iv = randomBytes(16);
+      // utilize generated public key
+      // pubKey
+      // hash (chop and mix) the public key      
+      // create a sha256 hash of the longer public key
+      key = createHmac('sha256',process.env.SECRETY).update(pubKey).digest('hex')
+      console.log('hashed key: ')
+      // allocate 32 bits for this scenario and use the public,hashed key
+      req.session.key = Buffer.alloc(32,key)
+      console.log(req.session.key)
+        iv = randomBytes(16)
       const cipher = createCipheriv(
         "aes-256-gcm",
         req.session.key,
@@ -73,6 +89,7 @@ app.route("/api/encrypt").post((req, res) => {
   } catch (err) {
     if (/^ERR_INVALID_ARG_TYPE$/i.test(err.code)) {
       res.json({ message: "err" });
+      throw new Error(err);
     } else {
       throw new Error(err);
     }
