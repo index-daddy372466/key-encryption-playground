@@ -5,7 +5,6 @@ const cors = require("cors");
 const path = require("path");
 const cookiesesh = require("cookie-session");
 const { createCipheriv, createDecipheriv, randomBytes } = require("crypto");
-
 // middleware
 app.set("views", path.resolve(__dirname, "../public"));
 app.set("view engine", "ejs");
@@ -45,26 +44,26 @@ const createId = (id, key, salt) => {
 
 // home
 app.route("/").get((req, res) => {
-  console.log(req.session);
+  console.log('initial vector')
   res.render("index.ejs");
 });
 
+let iv;
 app.route("/api/encrypt").post((req, res) => {
   const { encrypt } = req.body;
   console.log(encrypt);
   // encrypt the message
-
   try {
     if (req.session && encrypt) {
       req.session.key = randomBytes(32);
-      req.session.iv = randomBytes(16);
-      console.log(req.session.key);
-      console.log(req.session.iv);
+        iv = randomBytes(16);
       const cipher = createCipheriv(
         "aes-256-gcm",
         req.session.key,
-        req.session.iv
+        iv
       );
+      console.log('initial vector (encrypt)')
+      console.log(iv)
       const encryptedMessage =
         cipher.update(encrypt, "utf-8", "hex") + cipher.final("hex");
       res.json({ message: encryptedMessage });
@@ -79,7 +78,6 @@ app.route("/api/encrypt").post((req, res) => {
     }
   }
 });
-
 app.route("/api/decrypt").post((req, res) => {
   const { decrypt, encrypt } = req.body;
 
@@ -89,8 +87,10 @@ app.route("/api/decrypt").post((req, res) => {
       const decipher = createDecipheriv(
         "aes-256-gcm",
         Buffer.from(req.session.key),
-        Buffer.from(req.session.iv)
+        Buffer.from(iv)
       );
+      console.log('initial vector (decrypt)')
+      console.log(iv)
       const decryptedMessage = Buffer.from(
         decipher.update(Buffer.from(decrypt, "hex"), "utf-8")
       );
@@ -109,8 +109,10 @@ app.route("/api/decrypt").post((req, res) => {
 
 // encrypt users
 function encryptUsers(req, res, next) {
+  console.log('user id!')
+  console.log(req.session.id)
   let paths = ["/api/decrypt", "/api/encrypt"];
-  if (!paths.includes(req.path)) {
+  // if (!paths.includes(req.path)) {
     let newdate = new Date();
     let id = newdate.getTime().toString();
     // encrypt the date with a cipher
@@ -119,7 +121,7 @@ function encryptUsers(req, res, next) {
     if (req.session) {
       req.session.id = createId(id, key, salt);
     }
-  }
+  // }
   next();
 }
 // check if session is current or expired
