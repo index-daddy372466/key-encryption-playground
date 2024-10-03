@@ -1,0 +1,115 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-image:linear-gradient(200deg,rgba(55, 86, 55, 0.887),ghostwhite);
+    background-image:-o-linear-gradient(200deg,rgba(55, 86, 55, 0.887),ghostwhite);
+    background-image:-moz-linear-gradient(200deg,rgba(55, 86, 55, 0.887),ghostwhite);
+    background-image:-webkit-linear-gradient(200deg,rgba(55, 86, 55, 0.887),ghostwhite);
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+    height:100vh;
+    box-shadow: inset 0 0 18px 1.5px #333;;
+}
+
+#wrapper{
+    /* border:2px solid red; */
+    height:98%;
+    width:98%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#form-wrapper{
+/* border:4px solid purple; */
+display:flex;
+position:relative;
+gap:1rem;
+}
+
+#encrypt-container,#decrypt-container{
+    display:flex;
+    height:100%;
+    }
+#decrypt-input,#encrypt-input{
+    padding:1rem;
+    border-radius:12px 0 0 12px;
+    height:100%;
+    width:225px;
+    text-align:start;
+    font-size:24px;
+    line-break: auto;
+    text-wrap:wrap;
+    resize: none;
+    outline:none;
+    border:none;
+}
+/* button */
+.btn{
+    border-radius:0 12px 12px 0;
+    color:#000000;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding:.25rem;
+    transition: 1s;
+    font-weight: bold;
+    font-size:16px;
+    border:none;
+}
+#encrypt:hover,#decrypt:hover{
+    background:#fff;
+    cursor:pointer;
+    box-shadow: inset 5px 0 8px .6px #333;
+    transition: .25s;
+}
+form{
+    box-shadow:8px -5px 12px .75px #333;
+    border-radius: 12px;
+}
+#encrypt{
+    background:red;
+}
+#decrypt{
+    background:#0f0;
+
+}
+#encrypt:hover{
+    color:#f00;
+
+}
+#decrypt:hover{
+    color:rgb(10, 116, 10);
+
+}
+
+
+/* para */
+.para{
+    color:#000;
+    z-index:999;
+    position:absolute;
+    letter-spacing: .75px;
+    width:200px;
+    /* border:2px solid red; */
+    resize:none;
+    border-radius: 12px;
+    padding:.5rem;
+}
+#decrypt-para{
+    bottom:-6rem;
+}
+
+#encrypt-para{
+    top:-6rem;
+}

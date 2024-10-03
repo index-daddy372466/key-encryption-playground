@@ -64,24 +64,19 @@ app.route("/api/encrypt").post((req, res) => {
     res.json({message:encryptedMessage})
   }
 });
-const organizeBuffer = (variable) => {
-    let buff
-    const {type,data} = variable
-    buff = `<${type} ${[...data].join(" ")}>`
-    console.log(buff)
-    return buff
 
-}
 app.route("/api/decrypt").post((req, res) => {
-    const { decrypt } = req.body
-    console.log(decrypt)
+    const { decrypt, encrypt } = req.body
+    
 
   try{
     // decrypt message
-    if(req.session){
+    if(req.session && encrypt === decrypt){
     const decipher = createDecipheriv('aes-256-gcm',Buffer.from(req.session.key),Buffer.from(req.session.iv))
     const decryptedMessage = Buffer.from(decipher.update(Buffer.from(decrypt,'hex'),'utf-8'))
     res.json({message:decryptedMessage.toString()})
+  }  else {
+    res.json({message:'err'})
   }
   }
   catch(err){

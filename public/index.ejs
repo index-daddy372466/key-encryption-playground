@@ -3,26 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
     <title>encryptor</title>
   </head>
   <body>
     <div id="wrapper">
-      <!-- encrypt data -->
-      <form method="POST" action="/api/encrypt">
-        <div id="encrypt-container">
-          <input type="text" name="encrypt" id="encrypt-input" />
-          <button type="submit" id="encrypt">encrypt</button>
-          <p id="encrypt-para"></p>
-        </div>
-      </form>
-      <!-- decrypt data -->
-      <form method="POST" action="/api/decrypt">
-        <div id="decrypt-container">
-          <input type="text" name="decrypt" id="decrypt-input" />
-          <button type="submit" id="decrypt">decrypt</button>
-          <p id="decrypt-para"></p>
-        </div>
-      </form>
+      <div id="form-wrapper">
+        <!-- encrypt data -->
+        <textarea class="para" rows="4" cols="8" id="encrypt-para" disabled></textarea>
+
+        <form method="POST" action="/api/encrypt">
+          <div id="encrypt-container">
+            <textarea rows="8" type="text" name="encrypt" id="encrypt-input" maxlength="250" placeholder="Type or paste a message"></textarea>
+            <input type="button" class="btn" id="encrypt" value="Encrypt"/>
+          </div>
+        </form>
+        <!-- decrypt data -->
+        <textarea class="para" rows="4" cols="8" id="decrypt-para" disabled></textarea>
+
+        <form method="POST" action="/api/decrypt">
+          <div id="decrypt-container">
+            <textarea rows="8" type="text" name="decrypt" id="decrypt-input" maxlength="250" placeholder="Type or paste the encrypted message"></textarea>
+            <input type="button" class="btn" id="decrypt" value="Decrypt"/>
+          </div>
+        </form>
+      </div>
     </div>
   </body>
   <script type="module" src="main.js"></script>
