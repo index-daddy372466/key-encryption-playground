@@ -84,11 +84,40 @@ shadows.forEach((par,i)=>{
     par.onclick = e => {
         console.log('paragraph clicked!')
         console.log(realparas[i].value)
-        navigator.clipboard.writeText(realparas[i].value);
+        copyText(realparas[i].value);
         copy[i].classList.add('copy-click')
+        if(par.children.length < 2){
+            copyAlter(par)
+        }
+
         setTimeout(()=>{
             copy[i].classList.remove('copy-click')
         },150)
+        setTimeout(()=>{
+            removeAlter(par)
+        },1750)
     }
 })
+
+async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  function copyAlter(par){
+    par.classList.add('no-pointer')
+    const p = document.createElement('p');
+    p.classList.add('copy-para');
+    p.textContent = 'copied!'
+    par.appendChild(p);
+  }
+  function removeAlter(par){
+    par.classList.remove('no-pointer')
+    let p = par.children[1]
+    console.log(p)
+    par.removeChild(p)
+  }
 

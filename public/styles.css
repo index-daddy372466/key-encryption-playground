@@ -125,7 +125,22 @@ form{
     border-radius: 12px;
     padding:.5rem;
 }
-
+.no-pointer{
+    pointer-events: none;
+}
+.copy-para{
+    color:#fff;
+    font-size:14px;
+    animation: copyInd 1s ease forwards;
+}
+@keyframes copyInd{
+    from{
+        transform:translate(0,0);
+    }
+    to{
+        transform:translate(66px,0);
+    }
+}
 .copy-click{
  color:ghostwhite;
 }
