@@ -14,6 +14,10 @@ window.onload = e => {
     const elemX = formwrapper.clientWidth / 2
     return [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 }
+window.onresize = e => {
+    const elemX = formwrapper.clientWidth / 2
+    return [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+}
 
 function clearTextarea(textarea){
    clear = setTimeout(()=>textarea.value = '',5000)
