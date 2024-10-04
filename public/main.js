@@ -10,12 +10,38 @@ const epara = document.getElementById('encrypt-para')
 const dpara = document.getElementById('decrypt-para')
 const dtextarea = document.getElementById('decrypt-input')
 const etextarea = document.getElementById('encrypt-input')
+const radiocontainer = document.querySelectorAll('.radio-container')
+let radiobtns = document.querySelectorAll('.radiobtn')
 let clear;
 window.onload = e => {
+    // set paragraph pos
     const elemX = formwrapper.clientWidth / 2
     paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
     shadows = [...shadows].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+
+    // set radio container pos
+    let rads = [...radiocontainer]
+    rads.forEach((rad,idx) => {
+        rad.style = `right:${0}px;top:${(idx) * rad.clientHeight}px`
+    })
+
 }
+let btnnotequal
+let rads = [...radiocontainer]
+console.log(rads)
+rads.forEach((r,idx)=>r.onclick = e =>{ 
+    // unpress currently pressed btn-container
+    rads.map(g=>{
+        if(g.classList.contains('chosen')){
+            g.classList.remove('chosen')
+        }
+    })
+    // locate radio button & set it to true
+    let radio = e.currentTarget.children[0]
+    radio.checked = true
+    // add chosen class
+    r.classList.add('chosen')    
+})
 window.onresize = e => {
     const elemX = formwrapper.clientWidth / 2
     paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
@@ -50,12 +76,14 @@ encrypt.addEventListener('click',async e=>{
     clearTimeout(clear)
     e.preventDefault()
     let inp = e.target.parentElement.children[0]
-    await fetch(enc,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({encrypt:!inp.value?undefined:clearWhiteSpaces(inp.value)})})
+    let checked = [...radiobtns].find(r=>r.checked)
+    let num = +[...checked.classList][1]
+    await fetch(enc,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({encrypt:!inp.value?undefined:clearWhiteSpaces(inp.value),keylen:num})})
     .then(r=>r.json())
     .then(d=>{
         console.log(d.message)
         // store encryption value
-        epara.textContent = !d.message || d.message == 'err' ? 'No data entered' : d.message
+        epara.textContent = !d.message || d.message == 'err' ? 'No data entered' : d.message == 'inv-key-len' ? 'invalid key length' : d.message
         d.message == 'err' ? errText(epara) : regText(epara)
     })
     clearTextarea(etextarea)
@@ -71,7 +99,7 @@ decrypt.addEventListener('click',async e=>{
     .then(d=>{
         console.log(d.message)
         // store decryption value
-        dpara.textContent = d.message == 'err' ? 'Either your session ended, or the encryption key needs attention' : d.message
+        dpara.textContent = d.message == 'err' ? 'Either your session ended, or the encryption key needs attention' : d.message == 'inv-key-len' ? 'invalid key length' : d.message
         d.message == 'err' ? errText(dpara) : regText(dpara)
     })
     clearTextarea(dtextarea)

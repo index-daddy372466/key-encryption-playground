@@ -12,13 +12,21 @@
       <div id="form-wrapper">
         <!-- encrypt data -->
         <div class="shadow shadow-enc">
-          <i class="fa-regular fa-copy"></i>
+          <i class="fa-regular fa-copy noselect"></i>
         </div>
         <textarea class="para black-text" rows="4" cols="8" id="encrypt-para" disabled></textarea>
 
         <form method="POST" action="/api/encrypt">
           <div id="encrypt-container">
             <textarea rows="8" type="text" name="encrypt" id="encrypt-input" maxlength="250" placeholder="Type or paste a message"></textarea>
+            <div id="r16" class="radio-container">
+              <input type="radio" class="radiobtn 16" name="keylen" id="sixteen">
+              <label class="noselect" for="sixteen">16-bit</label>
+            </div>
+            <div id="r32" class="radio-container chosen">
+              <input type="radio" class="radiobtn 32" name="keylen" checked id="thirtytwo">
+              <label class="noselect" for="thirtytwo">32-bit</label>
+            </div>
             <input type="button" class="btn" id="encrypt" value="Encrypt"/>
           </div>
         </form>

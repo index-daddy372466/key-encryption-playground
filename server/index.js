@@ -58,8 +58,8 @@ app.route("/").get((req, res) => {
 
 let iv;
 app.route("/api/encrypt").post((req, res) => {
-  const { encrypt } = req.body;
-  console.log(encrypt);
+  const { encrypt, keylen } = req.body;
+  console.log(encrypt,keylen);
   // encrypt the message
   try {
     if (req.session && encrypt) {
@@ -70,14 +70,16 @@ app.route("/api/encrypt").post((req, res) => {
       key = createHmac('sha256',process.env.SECRETY).update(pubKey).digest('hex')
       console.log('hashed key: ')
       // allocate 32 bits for this scenario and use the public,hashed key
-      req.session.key = Buffer.alloc(32,key)
+
+      req.session.key = Buffer.alloc(keylen,key)
       console.log(req.session.key)
         iv = randomBytes(16)
       const cipher = createCipheriv(
-        "aes-256-gcm",
+        'aes-256-gcm',
         req.session.key,
         iv
       );
+
       console.log('initial vector (encrypt)')
       console.log(iv)
       const encryptedMessage =
@@ -90,7 +92,12 @@ app.route("/api/encrypt").post((req, res) => {
     if (/^ERR_INVALID_ARG_TYPE$/i.test(err.code)) {
       res.json({ message: "err" });
       throw new Error(err);
-    } else {
+    } else if (/^ERR_CRYPTO_INVALID_KEYLEN$/i.test(err.code)){
+      res.json({ message: "inv-key-len" });
+      throw new Error(err);
+    }
+    else {
+      console.log(err.code)
       throw new Error(err);
     }
   }
@@ -118,7 +125,12 @@ app.route("/api/decrypt").post((req, res) => {
   } catch (err) {
     if (/^ERR_INVALID_ARG_TYPE$/i.test(err.code)) {
       res.json({ message: "err" });
-    } else {
+    } else if (/^ERR_CRYPTO_INVALID_KEYLEN$/i.test(err.code)){
+      res.json({ message: "inv-key-len" });
+      throw new Error(err);
+    }
+    else {
+      console.log(err.code)
       throw new Error(err);
     }
   }
@@ -156,3 +168,8 @@ function checksamesession(req, res, next) {
 app.listen(PORT, () => {
   console.log("listening on port " + PORT);
 });
+
+
+// ref
+// aes-256: key length(32)
+// aes-128: key length(16)
