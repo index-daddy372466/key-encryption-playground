@@ -28,7 +28,8 @@ body{
     align-items: center;
     justify-content: center;
 }
-#form-wrapper{
+#form-wrapper
+{
 display:flex;
 position:relative;
 gap:1rem;
@@ -48,9 +49,8 @@ gap:1rem;
     }
 #decrypt-input,#encrypt-input{
     padding:1rem;
-    border-radius:12px 0 0 12px;
-    height:100%;
-    width:225px;
+    height:400px;
+    width:500px;
     text-align:start;
     font-size:24px;
     line-break: auto;
@@ -58,6 +58,21 @@ gap:1rem;
     resize: none;
     outline:none;
     border:none;
+}
+#encrypt-input{
+    border-radius:0 0 0 12px;
+}
+#aes256{
+    border-bottom-left-radius: 12px;
+}
+#decrypt-input{
+    border-radius: 12px 0 0 12px;
+}
+#decrypt-container{
+    border-radius:12px 0 0 12px;
+}
+#enrcypt-container{
+    border-radius:0 0 0 12px;
 }
 /* button */
 .btn{
@@ -136,7 +151,7 @@ form{
 .para,.shadow{
     position:absolute;
     letter-spacing: .75px;
-    width:200px;
+    width:350px;
     resize:none;
     border-radius: 12px;
     padding:.5rem;
@@ -179,11 +194,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 .aes-container,.aes-container > label{
     cursor:pointer;
 }
+.border-right-neg{
+    border-radius: 12px 0 0 0;
+}
 #r16{
     border-radius:0 12px 0 0;
 }
 .radio-container,.aes-container{
-    border-bottom:.25px solid #000;
     transition:.5s;
     z-index:999;
     background:red;
@@ -206,6 +223,20 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         gap:.5rem;
         margin-top:-2.75rem;
         }
+        #encrypt-input,#decrypt-input{
+            font-size:20px;
+            height:100%;
+            width:225px;
+        }
+        .shadow-enc{
+            top:-7rem;
+        }
+        .shadow-dec{
+            bottom:-7rem;
+        }
+        #wrapper{
+            margin-left:2rem;
+        }
 
         #decrypt-para{
             bottom:-7rem;
@@ -214,10 +245,12 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         #encrypt-para{
             top:-7rem;
         }
+        
         form{
             width:275px;
             height:250px;
         }
+        
 }
 /* small mobile device portrait */
 @media screen and (max-width:425px) and (max-height:750px) {
@@ -232,9 +265,20 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         #decrypt-para{
             bottom:-6.25rem;
         }
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
         
         #encrypt-para{
             top:-6.25rem;
+        }
+        .shadow-enc{
+            top:-6.25rem;
+        }
+        .shadow-dec{
+            bottom:-6.25rem;
         }
         form{
             width:225px;
@@ -244,19 +288,33 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 
 /* mobile phone landscape */
-@media screen and (max-width:1000px) and (max-height:500px) {
+@media screen and (max-width:1050px) and (max-height:780px) {
     #form-wrapper{
         display:flex;
         position:relative;
         gap:.5rem;
         }
-
         #decrypt-para{
             bottom:-5.5rem;
         }
         
+        #encrypt{
+            padding-top:8.36rem;
+        }
+        
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
         #encrypt-para{
             top:-5.5rem;
+        }
+        .shadow-enc{
+            top:-5.5rem;
+        }
+        .shadow-dec{
+            bottom:-5.5rem;
         }
         form{
             width:225px;
@@ -273,13 +331,23 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         gap:.5rem;
         margin-top:1rem;
         }
-
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
         #decrypt-para{
             bottom:-6.25rem;
         }
         
         #encrypt-para{
             top:-6.25rem;
+        }
+        .shadow-enc{
+            top:-6.25rem;
+        }
+        .shadow-dec{
+            bottom:-6.25rem;
         }
         form{
             width:225px;
@@ -300,9 +368,19 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         #decrypt-para{
             bottom:-7rem;
         }
-        
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:200px;
+        }
         #encrypt-para{
             top:-7rem;
+        }
+        .shadow-enc{
+            top:-7rem;
+        }
+        .shadow-dec{
+            bottom:-7rem;
         }
         form{
             width:275px;
@@ -317,13 +395,29 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         flex-direction: column;
         gap:1.25rem;
         }
-
+        #encrypt{
+            padding-top:8.36rem;
+        }
+        #wrapper{
+            margin-left:2rem;
+        }
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
         #decrypt-para{
             bottom:-5.15rem;
         }
         
         #encrypt-para{
             top:-5.15rem;
+        }
+        .shadow-enc{
+            top:-5.15rem;
+        }
+        .shadow-dec{
+            bottom:-5.15rem;
         }
         form{
             width:225px;
@@ -338,13 +432,26 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         flex-direction: row;
         gap:1.25rem;
         }
+        #encrypt{
+            padding-top:8.36rem;
+        }
 
         #decrypt-para{
             bottom:-5.75rem;
         }
-        
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
         #encrypt-para{
             top:-5.75rem;
+        }
+        .shadow-enc{
+            top:-5.75rem;
+        }
+        .shadow-dec{
+            bottom:-5.75rem;
         }
         form{
             width:225px;
@@ -369,8 +476,20 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         #encrypt-para{
             top:-5.15rem;
         }
+        #encrypt-input,#decrypt-input{
+            font-size:18px;
+            height:100%;
+            width:225px;
+        }
+        .shadow-enc{
+            top:-5.15rem;
+        }
+        .shadow-dec{
+            bottom:-5.15rem;
+        }
         form{
             width:200px;
             height:175px;
         }
 }
+

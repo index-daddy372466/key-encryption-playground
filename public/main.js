@@ -83,10 +83,13 @@ function regText(elem){
 }
 
 // input event
-[dtextarea,etextarea].forEach(d=>{
+let areas = [dtextarea,etextarea]
+areas.forEach((d,idx)=>{
     d.oninput = e => {
-        clearTimeout(clear)
-        clearTextarea(d)
+        if(e.currentTarget == areas[idx]){
+            clearTimeout(clear)
+            clearTextarea(d)
+        }
     }
 })
 
