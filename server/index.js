@@ -12,7 +12,7 @@ const { createCipheriv, createHmac, createDecipheriv, randomBytes } = require("c
 genKeys()
 // read pub key file and allocate 32 bytes from the file
 // store buffer in pubKey variable
-pubKey = Buffer.alloc(32,fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_pub.pem'),{encoding:'utf-8'}))
+let pubKey = Buffer.alloc(32,fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_pub.pem'),{encoding:'utf-8'}))
 // middleware
 app.set("views", path.resolve(__dirname, "../public"));
 app.set("view engine", "ejs");
@@ -58,8 +58,10 @@ app.route("/").get((req, res) => {
 
 let iv;
 app.route("/api/encrypt").post((req, res) => {
-  const { encrypt, keylen } = req.body;
-  console.log(encrypt,keylen);
+  const { encrypt, keylen, aes } = req.body;
+  // store aes in current session
+  req.session.aes = aes
+  console.log(encrypt,keylen,aes);
   // encrypt the message
   try {
     if (req.session && encrypt) {
@@ -75,7 +77,7 @@ app.route("/api/encrypt").post((req, res) => {
       console.log(req.session.key)
         iv = randomBytes(16)
       const cipher = createCipheriv(
-        'aes-256-gcm',
+        `aes-${aes}-gcm`,
         req.session.key,
         iv
       );
@@ -109,7 +111,7 @@ app.route("/api/decrypt").post((req, res) => {
     // decrypt message
     if (req.session && encrypt === decrypt) {
       const decipher = createDecipheriv(
-        "aes-256-gcm",
+        `aes-${req.session.aes}-gcm`,
         Buffer.from(req.session.key),
         Buffer.from(iv)
       );
@@ -173,3 +175,4 @@ app.listen(PORT, () => {
 // ref
 // aes-256: key length(32)
 // aes-128: key length(16)
+// aes-192: key length(24)

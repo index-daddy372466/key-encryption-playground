@@ -11,6 +11,7 @@ const dpara = document.getElementById('decrypt-para')
 const dtextarea = document.getElementById('decrypt-input')
 const etextarea = document.getElementById('encrypt-input')
 const radiocontainer = document.querySelectorAll('.radio-container')
+const aescontainer = document.querySelectorAll('.aes-container')
 let radiobtns = document.querySelectorAll('.radiobtn')
 let clear;
 window.onload = e => {
@@ -24,14 +25,32 @@ window.onload = e => {
     rads.forEach((rad,idx) => {
         rad.style = `right:${0}px;top:${(idx) * rad.clientHeight}px`
     })
+     // set aew container pos
+     let aess = [...aescontainer]
+     aess.forEach((rad,idx) => {
+         rad.style = `left:-${rad.clientWidth}px;top:${(idx) * rad.clientHeight}px`
+     })
 
 }
-let btnnotequal
 let rads = [...radiocontainer]
-console.log(rads)
 rads.forEach((r,idx)=>r.onclick = e =>{ 
     // unpress currently pressed btn-container
     rads.map(g=>{
+        if(g.classList.contains('chosen')){
+            g.classList.remove('chosen')
+        }
+    })
+    // locate radio button & set it to true
+    let radio = e.currentTarget.children[0]
+    radio.checked = true
+    // add chosen class
+    r.classList.add('chosen')    
+})
+
+let aess = [...aescontainer]
+aess.forEach((r,idx)=>r.onclick = e =>{ 
+    // unpress currently pressed btn-container
+    aess.map(g=>{
         if(g.classList.contains('chosen')){
             g.classList.remove('chosen')
         }
@@ -76,9 +95,18 @@ encrypt.addEventListener('click',async e=>{
     clearTimeout(clear)
     e.preventDefault()
     let inp = e.target.parentElement.children[0]
-    let checked = [...radiobtns].find(r=>r.checked)
-    let num = +[...checked.classList][1]
-    await fetch(enc,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({encrypt:!inp.value?undefined:clearWhiteSpaces(inp.value),keylen:num})})
+    let checked = [...radiobtns].filter(r=>r.checked)
+    let len,aes
+    checked.forEach((ch,ix)=>{
+        if(ix==0){
+            len = +[...checked[ix].classList][1]
+        } else {
+            aes = +[...checked[ix].classList][1]
+        }
+    })
+    console.log(len)
+    console.log(aes)
+    await fetch(enc,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({encrypt:!inp.value?undefined:clearWhiteSpaces(inp.value),keylen:len,aes})})
     .then(r=>r.json())
     .then(d=>{
         console.log(d.message)

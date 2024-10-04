@@ -23,10 +23,28 @@
               <input type="radio" class="radiobtn 16" name="keylen" id="sixteen">
               <label class="noselect" for="sixteen">16-bit</label>
             </div>
+            <div id="r24" class="radio-container">
+              <input type="radio" class="radiobtn 24" name="keylen" id="twentyfour">
+              <label class="noselect" for="twentyfour">24-bit</label>
+            </div>
             <div id="r32" class="radio-container chosen">
               <input type="radio" class="radiobtn 32" name="keylen" checked id="thirtytwo">
               <label class="noselect" for="thirtytwo">32-bit</label>
             </div>
+            <!-- aes standard options -->
+            <div id="aes128" class="aes-container">
+              <input type="radio" class="radiobtn 128" name="aes" id="128_input">
+              <label class="noselect" for="128_input">128</label>
+            </div>
+            <div id="aes192" class="aes-container">`
+              <input type="radio" class="radiobtn 192" name="aes" id="192_input">
+              <label class="noselect" for="192_input">192</label>
+            </div>
+            <div id="aes256" class="aes-container chosen">
+              <input type="radio" class="radiobtn 256" name="aes" id="256_input" checked>
+              <label class="noselect" for="256_input">256</label>
+            </div>
+            <!-- encryption button -->
             <input type="button" class="btn" id="encrypt" value="Encrypt"/>
           </div>
         </form>
