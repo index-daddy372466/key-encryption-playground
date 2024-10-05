@@ -214,11 +214,16 @@ async function copyText(text) {
 
 // mailbox
 const mailentry = document.querySelector('.mail-entry')
-mailentry.onmouseover = e => {
+const pubkey = document.querySelector('.pubkey')
+mailentry.onmouseenter = e => {
     mailentry.classList.remove('close-mail-entry');
     mailentry.classList.add('open-mail-entry');
+    setTimeout(()=>{
+        pubkey.classList.remove('key-hidden')
+    },150)
 }
-mailentry.onmouseout = e => {
+mailentry.onmouseleave = e => {
     mailentry.classList.remove('open-mail-entry')
     mailentry.classList.add('close-mail-entry')
+    pubkey.classList.add('key-hidden')
 }
