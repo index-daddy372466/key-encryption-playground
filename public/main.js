@@ -211,3 +211,14 @@ async function copyText(text) {
     par.removeChild(p)
   }
 
+
+// mailbox
+const mailentry = document.querySelector('.mail-entry')
+mailentry.onmouseover = e => {
+    mailentry.classList.remove('close-mail-entry');
+    mailentry.classList.add('open-mail-entry');
+}
+mailentry.onmouseout = e => {
+    mailentry.classList.remove('open-mail-entry')
+    mailentry.classList.add('close-mail-entry')
+}

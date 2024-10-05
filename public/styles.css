@@ -276,6 +276,14 @@ width:98%;
 }
 .mail-entry{
     height:75px;
+    transition:.5s;
+    cursor:pointer;
+}
+.open-mail-entry{
+    border-top:1.75rem solid black;
+}
+.close-mail-entry{
+    border-top:0 solid black;
 }
 .mail-exit{
     box-shadow: inset 0 .25rem 8px .7px #333;
