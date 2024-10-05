@@ -110,8 +110,8 @@ gap:1rem;
 .btn-text{
     transition:.5s;
     position:absolute;
-    right:15px;
-    bottom:20px;
+    right:5px;
+    bottom:5px;
     z-index:999;
     pointer-events: none;
     font-size:20px;
@@ -164,7 +164,7 @@ form{
 .shadow:hover{
     background:rgba(247, 247, 247, 0.19);
     cursor:pointer;
-}
+}g
 .para{
     z-index:998;
 }
@@ -236,6 +236,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 /* mobile phone portrait */
 @media screen and (max-width:500px) and (max-height:1000px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -276,6 +283,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 }
 /* small mobile device portrait */
 @media screen and (max-width:425px) and (max-height:750px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -311,6 +325,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 /* mobile phone landscape */
 @media screen and (max-width:1050px) and (max-height:780px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -346,6 +367,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 /* small mobile device landscape */
 @media screen and (max-width:750px) and (max-height:425px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -379,6 +407,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 /* ipad air & similar devices portrait */
 @media screen and (max-width:925px) and (max-height:1225px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -411,6 +446,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 }
 /* surface duo & similar devices portrait */
 @media screen and (max-width:600px) and (max-height:800px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -448,6 +490,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 }
 /* surface duo & similar devices landscape */
 @media screen and (max-width:800px) and (max-height:600px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;
@@ -483,6 +532,13 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 
 /* surface duo & similar devices landscape */
 @media screen and (max-width:910px) and (max-height:395px) {
+    .btn-text{
+        font-size:14px;
+    }
+    .title{
+        font-size:8px;
+    }
+
     #form-wrapper{
         display:flex;
         position:relative;

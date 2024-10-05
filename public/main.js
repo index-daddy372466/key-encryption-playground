@@ -4,8 +4,8 @@ let dec = '/api/decrypt'
 const encrypt = document.getElementById('encrypt')
 const decrypt = document.getElementById('decrypt')
 const formwrapper = document.getElementById('form-wrapper')
-let paras = document.querySelectorAll('.para')
-let shadows = document.querySelectorAll('.shadow')
+let paras = [...document.querySelectorAll('.para')]
+let shadows = [...document.querySelectorAll('.shadow')]
 const epara = document.getElementById('encrypt-para')
 const dpara = document.getElementById('decrypt-para')
 const dtextarea = document.getElementById('decrypt-input')
@@ -19,8 +19,8 @@ let clear;
 window.onload = e => {
     // set paragraph pos
     const elemX = formwrapper.clientWidth / 2
-    paras = [...paras].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
-    shadows = [...shadows].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras.forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    shadows.forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 
     // set radio container pos
     let rads = [...radiocontainer]
@@ -68,8 +68,8 @@ aess.forEach((r,idx)=>r.onclick = e =>{
 })
 window.onresize = e => {
     const elemX = formwrapper.clientWidth / 2
-    paras = [...paras].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
-    shadows = [...shadows].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras.forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    shadows.forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 
     // set radio container pos
     let rads = [...radiocontainer]
