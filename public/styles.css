@@ -49,15 +49,15 @@ gap:1rem;
     }
 #decrypt-input,#encrypt-input{
     padding:1rem;
-    height:400px;
-    width:500px;
+    width:225px;
+    height:100%;
     text-align:start;
     font-size:24px;
     line-break: auto;
     text-wrap:wrap;
     resize: none;
     outline:none;
-    border:none;
+    /* border:2px solid red; */
 }
 #encrypt-input{
     border-radius:0 0 0 12px;
@@ -76,8 +76,10 @@ gap:1rem;
 }
 /* button */
 .btn{
+    width:100px;
     border-radius:0 12px 12px 0;
     color:#000000;
+    transition:.9s;
     overflow:hidden;
     height:100%;
     display:flex;
@@ -85,10 +87,18 @@ gap:1rem;
     align-items: center;
     outline:none;
     padding:.25rem;
-    transition: 1s;
     font-weight: bold;
     font-size:16px;
     border:none;
+}
+.title{
+    height:78px;
+    width:100%;
+    display:flex;
+    background-color: #fff;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #encrypt:hover,#decrypt:hover{
@@ -97,16 +107,26 @@ gap:1rem;
     box-shadow: inset 5px 0 8px .6px #333;
     transition: .25s;
 }
+.btn-text{
+    transition:.5s;
+    position:absolute;
+    right:15px;
+    bottom:20px;
+    z-index:999;
+    pointer-events: none;
+    font-size:20px;
+}
 form{
     box-shadow:8px -5px 12px .75px #333;
     border-radius: 12px;
+    position:relative;
 }
 #encrypt{
-    background:red;
-    padding-top:4rem;
+    background:rgba(242, 6, 6, 0.662);
+    /* padding-top:4rem; */
 }
 #decrypt{
-    background:#0f0;
+    background:rgb(1, 144, 1);
 }
 #encrypt:hover{
     color:#f00;
@@ -237,7 +257,9 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         #wrapper{
             margin-left:2rem;
         }
-
+        #encrypt{
+            /* padding-top:8.25rem; */
+        }
         #decrypt-para{
             bottom:-7rem;
         }
@@ -299,7 +321,7 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         }
         
         #encrypt{
-            padding-top:8.36rem;
+            /* padding-top:8.36rem; */
         }
         
         #encrypt-input,#decrypt-input{
@@ -396,7 +418,7 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         gap:1.25rem;
         }
         #encrypt{
-            padding-top:8.36rem;
+            /* padding-top:8.36rem; */
         }
         #wrapper{
             margin-left:2rem;
@@ -433,7 +455,7 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
         gap:1.25rem;
         }
         #encrypt{
-            padding-top:8.36rem;
+            /* padding-top:8.36rem; */
         }
 
         #decrypt-para{

@@ -14,22 +14,27 @@ const radiocontainer = document.querySelectorAll('.radio-container')
 const aescontainer = document.querySelectorAll('.aes-container')
 let radiobtns = document.querySelectorAll('.radiobtn')
 let clear;
+
+// onload listen event
 window.onload = e => {
     // set paragraph pos
     const elemX = formwrapper.clientWidth / 2
-    paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
-    shadows = [...shadows].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras = [...paras].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    shadows = [...shadows].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
 
     // set radio container pos
     let rads = [...radiocontainer]
     rads.forEach((rad,idx) => {
-        rad.style = `right:${0}px;top:${(idx) * rad.clientHeight}px`
+        // set radio buttons same size as encrypt button
+        rad.style = `right:${0}px;top:${(idx) * rad.clientHeight}px;width:${encrypt.clientWidth}px`
+        
     })
      // set aew container pos
      let aess = [...aescontainer]
      aess.forEach((rad,idx) => {
          rad.style = `left:-${rad.clientWidth}px;top:${(idx) * rad.clientHeight}px`
      })
+        
 
 }
 let rads = [...radiocontainer]
@@ -63,8 +68,21 @@ aess.forEach((r,idx)=>r.onclick = e =>{
 })
 window.onresize = e => {
     const elemX = formwrapper.clientWidth / 2
-    paras = [...paras].map(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+    paras = [...paras].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
     shadows = [...shadows].forEach(x=>x.style = `left:${elemX-(x.clientWidth/2)}px`)
+
+    // set radio container pos
+    let rads = [...radiocontainer]
+    rads.forEach((rad,idx) => {
+        // set radio buttons same size as encrypt button
+        rad.style = `right:${0}px;top:${(idx) * rad.clientHeight}px;width:${encrypt.clientWidth}px`
+        
+    })
+     // set aew container pos
+     let aess = [...aescontainer]
+     aess.forEach((rad,idx) => {
+         rad.style = `left:-${rad.clientWidth}px;top:${(idx) * rad.clientHeight}px`
+     })
 }
 
 function clearTextarea(textarea){

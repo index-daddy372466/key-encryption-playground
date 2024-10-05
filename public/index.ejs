@@ -8,7 +8,9 @@
     <title>encryptor</title>
   </head>
   <body>
+    <div class="title"><h1>Encrypt <b style="color:red">Data</b> with Public & Decrypt with Public</h1></div>
     <div id="wrapper">
+      <!-- cipher and decipher -->
       <div id="form-wrapper">
         <!-- encrypt data -->
         <div class="shadow shadow-enc">
@@ -17,6 +19,7 @@
         <textarea class="para black-text" rows="4" cols="8" id="encrypt-para" disabled></textarea>
 
         <form method="POST" action="/api/encrypt">
+          <p class="btn-text noselect">Encrypt</p>
           <div id="encrypt-container">
             <textarea rows="8" type="text" name="encrypt" id="encrypt-input" maxlength="250" placeholder="Type or paste a message"></textarea>
             <div id="r16" class="radio-container">
@@ -45,23 +48,27 @@
               <label class="noselect" for="256_input">256</label>
             </div>
             <!-- encryption button -->
-            <input type="button" class="btn" id="encrypt" value="Encrypt"/>
+            <input type="button" class="btn" id="encrypt"/>
           </div>
         </form>
+
         <!-- decrypt data -->
         <div class="shadow shadow-dec">
           <i class="fa-regular fa-copy noselect"></i>
         </div>
         <textarea class="para black-text" rows="4" cols="8" id="decrypt-para" disabled></textarea>
-
         <form method="POST" action="/api/decrypt">
+          <p class="btn-text noselect">Decrypt</p>
           <div id="decrypt-container">
             <textarea rows="8" type="text" name="decrypt" id="decrypt-input" maxlength="250" placeholder="Type or paste the encrypted message"></textarea>
-            <input type="button" class="btn" id="decrypt" value="Decrypt"/>
+            <input type="button" class="btn" id="decrypt"/>
           </div>
         </form>
       </div>
     </div>
+    <div class="title"><h1>Encrypt <b style="color:red">Data</b> with Public & Decrypt with Private</h1></div>
+    <div class="title"><h1>Encrypt <b style="color:red">Signature</b> with Private & Decrypt with Public</h1></div>
+
   </body>
   <script type="module" src="main.js"></script>
 </html>
