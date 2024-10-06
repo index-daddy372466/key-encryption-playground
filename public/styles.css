@@ -235,28 +235,61 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 }
 /* envelope */
 #envelope-container{
-border:2px solid cyan;
+/* border:2px solid cyan; */
 display:flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
 }
+
 .env{
     height:100%;
     width:100%;
-    border:2px solid yellow;
+    /* border:2px solid yellow; */
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     
 }
+#env-form{
+    pointer-events: none;
+    visibility: hidden;
+    opacity:0;
+    height:0;
+    width:0;
+}
 #env-input{
 padding:1rem;
 border-radius: 12px;
-border:none;
 box-shadow: 0 .25rem 12px .7px #333;
 font-size:18px;
+outline:none;
+transition:.25s;
+}
+.no-border{
+    border:none;
+}
+.minimize-env{
+    transition:.25s;
+    background:#000;
+    color:#fff;
+    width:100%;
+    text-align: center;
+    border:8px double #fff;
+}
+.red-border{
+    border: 8px double #f00;
+    transition:.25s;
+    animation:colorchange 1s forwards;
+}
+@keyframes colorchange{
+    from{
+        border: 8px double #f00;
+    }
+    to{
+        border: 8px double #f0f;
+    }
 }
 
 /* mailbox */

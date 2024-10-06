@@ -227,3 +227,56 @@ mailentry.onmouseleave = e => {
     mailentry.classList.add('close-mail-entry')
     pubkey.classList.add('key-hidden')
 }
+
+// mailbox input
+let mailinputtimeout, inpval, dragging = false;
+const mailboxinput = document.getElementById('env-input')
+mailboxinput.onblur = e => {
+    if(e.target.value){
+        inpval = e.target.value
+    } else {
+        inpval = undefined
+    }
+    let securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
+    clearTimeout(mailinputtimeout)
+    e.target.classList.remove('no-border')
+    e.target.setAttribute('draggable',true)
+    e.target.classList.add('dragging')
+    e.target.classList.add('minimize-env')
+    
+    // send secured message to the server
+    e.target.value = securedMessage
+    mailboxinput.disabled = true
+    console.log('fired!')
+}
+mailboxinput.ondragstart = e => {
+    // enable dragging
+    dragging = true
+}
+window.onclick = e =>{
+    let x1,x2,y1,y2;
+    x1 = mailboxinput.getBoundingClientRect().x
+    x2 = mailboxinput.getBoundingClientRect().x + mailboxinput.clientWidth;
+    y1 = mailboxinput.getBoundingClientRect().y;
+    y2 = mailboxinput.getBoundingClientRect().y + mailboxinput.clientHeight;
+
+    // console.log(e.pageX,e.pageY)
+    if((e.pageX <= x2 && e.pageX >= x1) &&
+          (e.pageY <= y2 && e.pageY >= y1) && 
+          mailboxinput.draggable==true && dragging==false){
+            e.target.classList.add('red-border')
+            // console.log('inside the input true')
+            setTimeout(()=>{
+                e.target.classList.remove('red-border')
+                e.target.setAttribute('draggable',false)
+                e.target.classList.remove('dragging')
+                e.target.classList.remove('minimize-env')
+                e.target.classList.add('no-border')
+                e.target.value = !inpval ? '' : inpval;
+                console.log(inpval)
+                mailboxinput.disabled = false
+                mailboxinput.focus();
+            },1250)
+    }
+
+}
