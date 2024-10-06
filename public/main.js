@@ -254,6 +254,7 @@ mailboxinput.ondragstart = e => {
     dragging = true
 }
 window.onclick = e =>{
+    dragging = false;
     let x1,x2,y1,y2;
     x1 = mailboxinput.getBoundingClientRect().x
     x2 = mailboxinput.getBoundingClientRect().x + mailboxinput.clientWidth;
@@ -264,15 +265,16 @@ window.onclick = e =>{
     if((e.pageX <= x2 && e.pageX >= x1) &&
           (e.pageY <= y2 && e.pageY >= y1) && 
           mailboxinput.draggable==true && dragging==false){
-            e.target.classList.add('red-border')
+            
+            mailboxinput.classList.add('red-border')
             // console.log('inside the input true')
             setTimeout(()=>{
-                e.target.classList.remove('red-border')
-                e.target.setAttribute('draggable',false)
-                e.target.classList.remove('dragging')
-                e.target.classList.remove('minimize-env')
-                e.target.classList.add('no-border')
-                e.target.value = !inpval ? '' : inpval;
+                mailboxinput.classList.remove('red-border')
+                mailboxinput.setAttribute('draggable',false)
+                mailboxinput.classList.remove('dragging')
+                mailboxinput.classList.remove('minimize-env')
+                mailboxinput.classList.add('no-border')
+                mailboxinput.value = !inpval ? '' : inpval;
                 console.log(inpval)
                 mailboxinput.disabled = false
                 mailboxinput.focus();
