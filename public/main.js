@@ -264,6 +264,7 @@ document.ondrop = async e => {
     mailentry.classList.add('close-mail-entry')
     pubkey.classList.add('key-hidden')
     if(e.target == mailentry){
+        restoreInput(mailboxinput,inpval)
         document.querySelector('.handle').classList.remove('mail-glow')
         console.log('you dropped a deuce')
         // post message to the server (if not undefined)
@@ -281,8 +282,6 @@ document.ondrop = async e => {
 mailboxinput.ondragend = e => {
     // enable dragging
     dragging = false
-    securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
-    mailboxinput.value = securedMessage
 }
 mailboxinput.previousElementSibling.onsubmit = e => {
 e.preventDefault()
