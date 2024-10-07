@@ -215,21 +215,16 @@ async function copyText(text) {
 // mailbox
 const mailentry = document.querySelector('.mail-entry')
 const pubkey = document.querySelector('.pubkey')
-mailentry.onmouseenter = e => {
-    mailentry.classList.remove('close-mail-entry');
-    mailentry.classList.add('open-mail-entry');
-    setTimeout(()=>{
-        pubkey.classList.remove('key-hidden')
-    },150)
-}
-mailentry.onmouseleave = e => {
-    mailentry.classList.remove('open-mail-entry')
-    mailentry.classList.add('close-mail-entry')
-    pubkey.classList.add('key-hidden')
-}
+// mailentry.onmouseenter = e => {
+//     mailentry.classList.remove('close-mail-entry');
+//     mailentry.classList.add('open-mail-entry');
+//     setTimeout(()=>{
+//         pubkey.classList.remove('key-hidden')
+//     },150)
+// }
 
 // mailbox input
-let mailinputtimeout, inpval, dragging = false;
+let inpval, dragging = false, securedMessage;
 const mailboxinput = document.getElementById('env-input')
 mailboxinput.onblur = e => {
     if(e.target.value){
@@ -237,23 +232,65 @@ mailboxinput.onblur = e => {
     } else {
         inpval = undefined
     }
-    let securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
-    clearTimeout(mailinputtimeout)
-    e.target.classList.remove('no-border')
-    e.target.setAttribute('draggable',true)
-    e.target.classList.add('dragging')
-    e.target.classList.add('minimize-env')
-    
-    // send secured message to the server
-    e.target.value = securedMessage
-    mailboxinput.disabled = true
+    readyMessage(mailboxinput,inpval)
     console.log('fired!')
 }
 mailboxinput.ondragstart = e => {
     // enable dragging
     dragging = true
+    securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
+    mailboxinput.value = securedMessage
+    mailboxinput.classList.add('ondrag')
 }
+document.ondragenter = e => {
+    if(e.target == mailentry){
+        document.querySelector('.handle').classList.add('mail-glow')
+        console.log('you entered')
+        mailentry.classList.remove('close-mail-entry');
+        mailentry.classList.add('open-mail-entry');
+    }
+}
+document.ondragleave = e => {
+    if(e.target == mailentry){
+        document.querySelector('.handle').classList.remove('mail-glow')
+        console.log('you exited')
+    }
+}
+document.ondragover = e => {
+   e.preventDefault();
+}
+document.ondrop = async e => {
+    mailentry.classList.remove('open-mail-entry')
+    mailentry.classList.add('close-mail-entry')
+    pubkey.classList.add('key-hidden')
+    if(e.target == mailentry){
+        document.querySelector('.handle').classList.remove('mail-glow')
+        console.log('you dropped a deuce')
+        // post message to the server (if not undefined)
+        if(!inpval){
+            console.log('enter data before dropping')
+        } else {
+            await fetch('/api/encrypt/public',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:inpval})})
+    .then(r=>r.json())
+    .then(d=>{
+        console.log(d.message)
+    })
+        }
+    }
+}
+mailboxinput.ondragend = e => {
+    // enable dragging
+    dragging = false
+    securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
+    mailboxinput.value = securedMessage
+}
+mailboxinput.previousElementSibling.onsubmit = e => {
+e.preventDefault()
+}
+
 window.onclick = e =>{
+    console.log(mailboxinput.draggable)
+    mailboxinput.disabled = false
     dragging = false;
     let x1,x2,y1,y2;
     x1 = mailboxinput.getBoundingClientRect().x
@@ -263,22 +300,40 @@ window.onclick = e =>{
 
     // console.log(e.pageX,e.pageY)
     if((e.pageX <= x2 && e.pageX >= x1) &&
-          (e.pageY <= y2 && e.pageY >= y1) && 
-          mailboxinput.draggable==true && dragging==false){
-            
-            mailboxinput.classList.add('red-border')
-            // console.log('inside the input true')
-            setTimeout(()=>{
-                mailboxinput.classList.remove('red-border')
-                mailboxinput.setAttribute('draggable',false)
-                mailboxinput.classList.remove('dragging')
-                mailboxinput.classList.remove('minimize-env')
-                mailboxinput.classList.add('no-border')
-                mailboxinput.value = !inpval ? '' : inpval;
-                console.log(inpval)
-                mailboxinput.disabled = false
-                mailboxinput.focus();
-            },1250)
+          (e.pageY <= y2 && e.pageY >= y1)){
+            if(mailboxinput.draggable == true){
+                // console.log(dragging)
+                // console.log('clicked')
+                mailboxinput.classList.add('red-border')
+                // console.log('inside the input true')
+                setTimeout(()=>{
+                    restoreInput(mailboxinput,inpval)
+                },1250)
+            } 
     }
 
+}
+
+// restore input to original state
+function restoreInput(inp,inpval){
+    inp.classList.remove('red-border')
+    inp.setAttribute('draggable',false)
+    inp.classList.remove('dragging')
+    inp.classList.remove('minimize-env')
+    inp.classList.add('no-border')
+    inp.value = !inpval ? '' : inpval;
+    console.log(inpval)
+    inp.disabled = false
+    inp.focus();
+}
+// ready the input for public key encryption
+function readyMessage(inp,inpval){
+    securedMessage = !inpval ? 'Undefined data (click)' : 'Secured Message'
+    inp.classList.remove('no-border')
+    inp.setAttribute('draggable',true)
+    inp.classList.add('dragging')
+    inp.classList.add('minimize-env')
+    inp.classList.remove('nodrag')
+    // send secured message to the server
+   inp.value = securedMessage
 }

@@ -8,11 +8,14 @@ const path = require("path");
 const cookiesesh = require("cookie-session");
 const genKeys = require('../encryption/genKeys.js')
 const { createCipheriv, createHmac, createDecipheriv, randomBytes } = require("crypto");
+const crypto = require('crypto')
 // generage pub key
 genKeys()
 // read pub key file and allocate 32 bytes from the file
 // store buffer in pubKey variable
-let pubKey = Buffer.alloc(32,fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_pub.pem'),{encoding:'utf-8'}))
+let secKey = Buffer.alloc(32,process.env.SECRETY)
+let privKey = fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_priv.pem'),{encoding:'utf-8'})
+let pubKey = fs.readFileSync(path.resolve(__dirname,'../encryption/crypto/id_rsa_pub.pem'),{encoding:'utf-8'})
 // middleware
 app.set("views", path.resolve(__dirname, "../public"));
 app.set("view engine", "ejs");
@@ -66,16 +69,15 @@ app.route("/api/encrypt").post((req, res) => {
   try {
     if (req.session && encrypt) {
       // utilize generated public key
-      // pubKey
+      // secKey
       // hash (chop and mix) the public key      
       // create a sha256 hash of the longer public key
-      key = createHmac('sha256',process.env.SECRETY).update(pubKey).digest('hex')
+      key = createHmac('sha256',process.env.SECRETY).update(secKey).digest('hex')
       console.log('hashed key: ')
       // allocate 32 bits for this scenario and use the public,hashed key
 
       req.session.key = Buffer.alloc(keylen,key)
-      console.log(req.session.key)
-        iv = randomBytes(16)
+      iv = randomBytes(16)
       const cipher = createCipheriv(
         `aes-${aes}-gcm`,
         req.session.key,
@@ -137,11 +139,43 @@ app.route("/api/decrypt").post((req, res) => {
     }
   }
 });
+app.route("/api/encrypt/public").post((req,res)=>{
+  const message = req.body.message
+  try{
+    if(message){
+    let encryptedData = crypto.publicEncrypt(pubKey,message)
+    console.log(encryptedData)
+    res.json({message:Buffer.alloc(256,encryptedData.toString('hex')).toString()})
+    } else {
+      console.log(message)
+      res.json({message:undefined})
+    }
+  }
+  catch(err){
+    throw new Error(err)
+  }
+})
+app.route("/api/decrypt/:message").get((req,res)=>{
+  const message = req.params.message
+  try{
+    if(message){
+      console.log(message)
+      let decData = crypto.privateDecrypt({key:privKey,padding:crypto.constants.RSA_NO_PADDING},message)
+      console.log(Buffer.from(decData).toString('utf8'))
+      res.json({message:false})
+    } else {
+      res.json({message:undefined})
+    }
+  }
+  catch(err){
+    throw new Error(err)
+  }
+})
 
 // encrypt users
 function encryptUsers(req, res, next) {
-  console.log('user id!')
-  console.log(req.session.id)
+  // console.log('user id!')
+  // console.log(req.session.id)
   let paths = ["/api/decrypt", "/api/encrypt"];
   // if (!paths.includes(req.path)) {
     let newdate = new Date();
