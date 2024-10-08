@@ -69,12 +69,12 @@
     <div class="title"><h1>Encrypt <b style="color:red">Data</b> with Public & Decrypt with Private</h1></div>
     <div id="wrapper2" class="wrapper-container">
       <!-- envelope -->
-      <div id="envelope-container">
+      <!-- <div id="envelope-container"> -->
         <div class="env">
           <form id="env-form" action="/api/encrypt/public"></form>
           <input type="text" name="pubencrypt" class="noselect no-border nodrag" form="env-form" placeholder="Type a Message" id="env-input">
         </div>
-      </div>
+      <!-- </div> -->
 
       <!-- mailbox -->
        <div id="mailbox-container" class="mailbox-daddy daddy-mailbox">
@@ -90,19 +90,20 @@
         </div>
         <!-- decrypt with private key (mailman/mailwoman) -->
         <div id="mailbox-private" class="mail mailbox-bottom">
+          <p class="decoded-word key-hidden"></p>
           <!-- unlock decrypt and decipher mail -->
           <div class="mail-exit exit exit-mail">
-            <div class="keyhole key-hole hole-key key">
+            <div class="keyhole key-hole no-keyglow hole-key key lock-mailbox">
               <i class="fa-brands fa-keycdn"></i>
             </div>
         </div>
        </div>
     </div>
     <!-- private key -->
-     <div id="private-key-container">
       <!-- private key representation -->
-      <i class="fa-solid fa-key privkey" draggable="true"></i>
-     </div>
+      <div id="privkey-container">
+        <i class="fa-solid fa-key privkey key-hidden"></i>
+      </div>
     </div>
     <div class="title"><h1>Encrypt <b style="color:red">Signature</b> with Private & Decrypt with Public</h1></div>
     <div id="wrapper3" class="wrapper-container"></div>

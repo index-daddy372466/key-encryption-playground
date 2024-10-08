@@ -235,7 +235,7 @@ box-shadow: inset 1.5px -.5px 7px .5px #000000;
 }
 /* envelope */
 #envelope-container{
-/* border:2px solid cyan; */
+border:2px solid cyan;
 display:flex;
 flex-direction: column;
 align-items: center;
@@ -243,14 +243,15 @@ justify-content: center;
 }
 
 .env{
-    height:100%;
-    width:100%;
-    /* border:2px solid yellow; */
+    z-index:999;
+    border:8px double yellow;
+    border-radius:12px;
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+    position: absolute;
+    cursor:move;
 }
 #env-form{
     pointer-events: none;
@@ -260,13 +261,16 @@ justify-content: center;
     width:0;
 }
 #env-input{
+margin:1rem;
 padding:1rem;
 border-radius: 12px;
+font-weight: bold;
 box-shadow: 0 .25rem 12px .7px #333;
-font-size:18px;
+font-size:12px;
 outline:none;
 transition:.25s;
-max-width:300px;
+max-width:200px;
+z-index: 999;
 }
 .no-border{
     border:none;
@@ -278,9 +282,9 @@ max-width:300px;
     transition:.25s;
     background:#000;
     color:#fff;
-    width:100%;
+    width:150px;
+    height:25px;
     text-align: center;
-    border:8px double #fff;
 }
 .red-border{
     border: 8px double #f00;
@@ -311,13 +315,15 @@ max-width:300px;
     justify-content: center;
     border-radius: 50px 50px 0 0;
     overflow:hidden;
+    z-index:998;
 }
 #wrapper2{
     display:flex;
     width:98%;
     height:100%;
-    align-items: center;
-    justify-content:space-evenly;
+    align-items: end;
+    justify-content:center;
+    z-index:998;
 }
 .mail{
 height:98%;
@@ -327,6 +333,7 @@ position:relative;
  .mailbox-bottom{
     border-bottom:3.25rem solid #fff;
  }
+ 
 .mailbox-top,.mailbox-bottom{
     display:flex;
     flex-direction: column;
@@ -345,10 +352,18 @@ position:relative;
     background:blue;
     box-shadow: inset 0 -.5rem 18px .7px #333;
 }
-.mail-entry{
+.mail-entry,.mail-exit{
     height:75px;
     transition:.5s;
-    cursor:pointer;
+}
+
+.decoded-word{
+    color:#fff;
+    font-size:16px;
+    max-width: 100px;
+    max-height:100px;
+    position: absolute;
+    top:10px;
 }
 .open-mail-entry{
     border-top:2.75rem solid black;
@@ -356,16 +371,27 @@ position:relative;
 .close-mail-entry{
     border-top:0 solid black;
 }
+.open-mail-exit{
+    border-top:3rem solid #000;
+}
+.close-mail-exit{
+    border-top:0 solid #000;
+}
 .mail-exit{
     box-shadow: inset 0 .25rem 8px .7px #333;
     height:90%;
     padding-top:.75rem;
 }
+.no-keyglow{
+    border:2.5px double #080369;
+}
+.yes-keyglow{
+    border:2.5px double gold;
+}
 .keyhole{
     height:20px;
     width:20px;
     overflow:hidden;
-    border:2.5px double #080369;
     border-radius: 50%;
     display:flex;
     flex-direction: column;
@@ -384,9 +410,19 @@ position:relative;
     color:rgb(3, 239, 3);
     top:5px;
 }
+#privkey-container{
+    height:45px;
+    width:60px;
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+    z-index:999;
+
+}
 .privkey{
     font-size:50px;
-    /* border:2px solid red; */
     color:rgb(247, 10, 53);
 }
 .hovering{
@@ -408,6 +444,30 @@ position:relative;
     color:#000000c4;
     font-size:14px;
 }
+.unlock-mailbox{
+animation: unlockmb 1.5s forwards ease;
+}
+@keyframes unlockmb {
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+ 
+}
+.lock-mailbox{
+    animation: lockmb 1.5s forwards ease;
+    }
+    @keyframes lockmb {
+        from{
+            transform:rotate(360deg);
+        }
+        to{
+            transform:rotate(0deg);
+        }
+     
+    }
 .handle{
     /* border:2px solid red; */
     height:12px;

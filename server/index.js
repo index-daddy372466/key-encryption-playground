@@ -174,6 +174,7 @@ app.route("/api/encrypt/public").post((req, res) => {
 // decrypt data with private key 
 app.route("/api/decrypt/:message").get((req, res) => {
   const message = req.params.message;
+  console.log(message)
   try {
     if (message) {
       // buffer the hex data from encrypted message
