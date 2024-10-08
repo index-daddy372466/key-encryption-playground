@@ -17,10 +17,16 @@ const mailentry = document.querySelector(".mail-entry");
 const mailexit = document.querySelector(".mail-exit");
 const pubkey = document.querySelector(".pubkey");
 const mailfob = document.querySelector('.keyhole')
+const instructionset = {
+  message:document.querySelector('.ins1'),
+  key:document.querySelector('.ins2'),
+  status:document.querySelector('.ins3')
+}
 let clear;
 
 // onload listen event
 window.onload = (e) => {
+  document.querySelector(".env").classList.remove('key-hidden')
   document.querySelector(".env").style = `left: 50px;`;
   document.querySelector("#privkey-container").style = `right: 50px;`;
   // set paragraph pos
@@ -212,7 +218,6 @@ shadows.forEach((par, i) => {
 function restoreInput(inp, inpval) {
   inp.classList.remove("red-border");
   inp.setAttribute("draggable", false);
-  inp.classList.remove("dragging");
   inp.classList.remove("minimize-env");
   inp.classList.add("no-border");
   inp.value = !inpval ? "" : inpval;
@@ -225,7 +230,6 @@ function readyMessage(inp, inpval) {
   inp.disabled = true
   securedMessage = !inpval ? "Undefined data" : "Secured Message";
   inp.classList.remove("no-border");
-  inp.classList.add("dragging");
   inp.classList.add("minimize-env");
   // send secured message to the server
   inp.value = securedMessage;
@@ -291,6 +295,7 @@ function dragElement(elmnt) {
   function elementDrag(e) {
     
     if(current_drag==mailboxinput.parentElement){
+      current_drag.classList.remove('indicate-border')
         readyMessage(mailboxinput, inpval);
         if(dragging == true) {
             if(insideElement(mailentry, { x: e.pageX, y: e.pageY })){
@@ -323,13 +328,19 @@ function dragElement(elmnt) {
         mailboxinput.value = !inpval ? '' : inpval
         restoreInput(mailboxinput,inpval)
     }
+    // if private key enters keyhole
     if(current_drag.id == 'privkey-container' && insideElement(mailfob,{ x: e.pageX, y: e.pageY })){
+        const yesKey = 'mail decrypted'
+
+        instructionset.status.textContent = yesKey
         mailfob.classList.remove('lock-mailbox')
         mailfob.classList.add('unlock-mailbox')
         mailfob.classList.add('mail-glow')
         mailfob.classList.remove('no-keyglow')
         mailfob.classList.add('yes-keyglow')
         mailfob.classList.add('mail-glow')
+        document.querySelector("#privkey-container").style = `right: 50px;`;
+        
         mailboxinput.parentElement.classList.add('no-pointer')
         await fetch(`/api/decrypt/${encrypted}`, {
             method: "GET",
@@ -343,6 +354,7 @@ function dragElement(elmnt) {
             // hide private key 
         document.querySelector('.privkey').classList.add('key-hidden')
         setTimeout(()=>{
+            mailboxinput.parentElement.classList.toggle('indicate-border')
             mailexit.classList.remove('close-mail-exit')
             mailexit.classList.add('open-mail-exit')
             document.querySelector('.decoded-word').classList.remove('key-hidden')
@@ -356,9 +368,15 @@ function dragElement(elmnt) {
         // post message to the server (if not undefined)
         if (!inpval) {
           console.log("enter data before dropping");
+          const noData = 'No data inserted'
+          instructionset.status.textContent = noData
         } else {
             // reveal private key
+          const yesData = 'mail encrypted'
+          instructionset.status.textContent = yesData
+          instructionset.key.classList.remove('key-hidden')
           document.querySelector('.privkey').classList.remove('key-hidden')
+          document.querySelector(".env").style = `left: 50px;`;
           await fetch("/api/encrypt/public", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -377,7 +395,6 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
-
 
 
 

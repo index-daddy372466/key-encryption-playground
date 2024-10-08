@@ -70,14 +70,22 @@
     <div id="wrapper2" class="wrapper-container">
       <!-- envelope -->
       <!-- <div id="envelope-container"> -->
-        <div class="env">
+        <div class="env key-hidden">
           <form id="env-form" action="/api/encrypt/public"></form>
           <input type="text" name="pubencrypt" class="noselect no-border nodrag" form="env-form" placeholder="Type a Message" id="env-input">
         </div>
       <!-- </div> -->
 
+      <!-- insturctions for input -->
+       <div class="instructions-container">
+        <p class="ins-text ins1">Type message & drag into <b>mailbox</b></p>
+       </div>
       <!-- mailbox -->
        <div id="mailbox-container" class="mailbox-daddy daddy-mailbox">
+        <!-- status message -->
+         <div class="instruction-container">
+          <p class="inst-text ins3">Empty</p>
+         </div>
         <!-- encrypt with public key (client to mailbox) -->
         <div id="mailbox-public" class="mail mailbox-top">
           <!-- public key representation -->
@@ -99,6 +107,10 @@
         </div>
        </div>
     </div>
+    <!-- insturctions for private key -->
+    <div class="instructions-container">
+      <p class="ins-text ins2 key-hidden">Drag key into <b>keyhole</b></p>
+     </div>
     <!-- private key -->
       <!-- private key representation -->
       <div id="privkey-container">

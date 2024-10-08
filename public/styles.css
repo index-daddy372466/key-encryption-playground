@@ -300,6 +300,16 @@ z-index: 999;
     }
 }
 
+
+.ins3{
+    top:-2rem;
+    color:#fff;
+    font-size: 18px;
+    padding:.5rem 0;
+}
+.indicate-border{
+    border:8px double red;
+}
 /* mailbox */
 #mailbox-container{
     border-bottom:4px solid #fff;
@@ -313,17 +323,21 @@ z-index: 999;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position:relative;
     border-radius: 50px 50px 0 0;
     overflow:hidden;
     z-index:998;
 }
 #wrapper2{
     display:flex;
-    width:98%;
+    width:60%;
     height:100%;
-    align-items: end;
+    align-items: center;
     justify-content:center;
     z-index:998;
+    border:2px solid pink;
+    position:relative;
+    gap:2rem;
 }
 .mail{
 height:98%;
@@ -405,6 +419,14 @@ position:relative;
     position:absolute;
     transform:rotate(30deg);
 }
+.ins-text{
+    color:red;
+    background:rgba(170, 165, 165, 0.378);
+    z-index:999;
+    padding:1rem; border-radius:12px;
+    color:#000000;
+    font-size:18px;
+}
 .pubkey{
     font-size:35px;
     color:rgb(3, 239, 3);
@@ -428,10 +450,7 @@ position:relative;
 .hovering{
     cursor:pointer;
 }
-.dragging{
-    cursor:grab;
-}
-.ondrag{
+.absolute{
     position:absolute;
 }
 .nodrag{
