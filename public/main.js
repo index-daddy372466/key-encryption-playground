@@ -20,7 +20,8 @@ const mailfob = document.querySelector('.keyhole')
 const instructionset = {
   message:document.querySelector('.ins1'),
   key:document.querySelector('.ins2'),
-  status:document.querySelector('.ins3')
+  status:document.querySelector('.ins3'),
+  hexstr:document.querySelector('.ins4')
 }
 let clear;
 
@@ -200,14 +201,14 @@ shadows.forEach((par, i) => {
     copyText(realparas[i].value);
     copy[i].classList.add("copy-click");
     if (par.children.length < 2) {
-      copyAlter(par);
+      copyAlert(par);
     }
 
     setTimeout(() => {
       copy[i].classList.remove("copy-click");
     }, 150);
     setTimeout(() => {
-      removeAlter(par);
+      removeAlert(par);
     }, 1750);
   };
 });
@@ -370,6 +371,7 @@ function dragElement(elmnt) {
           console.log("enter data before dropping");
           const noData = 'No data inserted'
           instructionset.status.textContent = noData
+          instructionset.hexstr.textContent = noData
         } else {
             // reveal private key
           const yesData = 'mail encrypted'
@@ -385,6 +387,8 @@ function dragElement(elmnt) {
             .then((r) => r.json())
             .then((d) => {
               console.log(d.message);
+              // show encrypted data
+              instructionset.hexstr.textContent = d.message;
               return !d.message ? null : encrypted = d.message
             });
         }
@@ -427,16 +431,16 @@ async function copyText(text) {
     console.error(error.message);
   }
 }
-function copyAlter(par) {
+function copyAlert(par) {
   par.classList.add("no-pointer");
   const p = document.createElement("p");
   p.classList.add("copy-para");
   p.textContent = "copied!";
   par.appendChild(p);
 }
-function removeAlter(par) {
+function removeAlert(par) {
   par.classList.remove("no-pointer");
-  let p = par.children[1];
+  let p = par.children[1]||par.children[0];
   console.log(p);
   par.removeChild(p);
 }
@@ -461,6 +465,19 @@ function activateInput(elm){
             elm.classList.remove('minimize-env')
         },2000)
     }
+}
+
+
+// copy text from ins4 hex text
+instructionset.hexstr.onclick = e => {
+  copyText(e.target.textContent)
+  copyAlert(e.target)
+  setTimeout(() => {
+    e.target.classList.remove("copy-click");
+  }, 150);
+  setTimeout(() => {
+    removeAlert(e.target);
+  }, 1750);
 }
 // document.onmousemove = e =>{ 
 //     console.log(e.pageX)
