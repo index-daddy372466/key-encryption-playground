@@ -289,7 +289,13 @@ z-index: 999;
     border:none;
 }
 .mail-glow{
-    border:4px solid gold;
+    border:4px solid #0f0;
+}
+.handle-glow{
+    border:4px solid rgb(252, 235, 0);
+}
+.mail-fail{
+    border:4px solid rgb(255, 0, 0);
 }
 .minimize-env{
     transition:.25s;
@@ -380,8 +386,10 @@ position:relative;
     align-items: center;
     justify-content: start;
     background:blue;
-    border:4px solid #000;
     box-shadow: inset 0 -.2rem 9px .7px #333;
+}
+.reg-border{
+    border:4px solid #000;
 }
 .mail-entry,.mail-exit{
     height:105px;

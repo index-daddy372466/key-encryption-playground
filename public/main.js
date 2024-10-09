@@ -294,6 +294,7 @@ function dragElement(elmnt) {
   function elementDrag(e) {
     if (current_drag == mailboxinput.parentElement) {
       current_drag.classList.remove("indicate-border");
+      document.querySelector(".privkey").classList.add('key-hidden')
       readyMessage(mailboxinput, inpval);
       if (dragging == true) {
         if (insideElement(current_drag, mailentry)) {
@@ -341,13 +342,17 @@ function dragElement(elmnt) {
         instructionset.hexstr.classList.remove('key-hidden')
         // if input is undefined
         if (!inpval) {
+          mailentry.classList.remove('reg-border')
+          mailentry.classList.add('mail-fail')
           console.log("enter data before dropping");
           const noData = "No data inserted";
           instructionset.status.textContent = noData;
           instructionset.hexstr.textContent = noData;
         } else {
           // reveal public key
+          mailentry.classList.remove('mail-fail')
           mailentry.classList.remove("mail-glow");
+          mailentry.classList.add('reg-border');
           const yesData = "mail encrypted";
           instructionset.status.textContent = yesData;
           instructionset.key.classList.remove("key-hidden");
@@ -416,14 +421,21 @@ function dragElement(elmnt) {
 
 // functions
 function hoverOverMailboxTop() {
-  document.querySelector(".handle").classList.add("mail-glow");
-  mailentry.classList.add('mail-glow')
+  document.querySelector(".handle").classList.add("handle-glow");
+  mailentry.classList.remove('reg-border')
+  if(!inpval){
+    mailentry.classList.add('mail-fail')
+    mailentry.classList.remove('mail-glow')
+  } else {
+    mailentry.classList.remove('mail-fail')
+    mailentry.classList.add('mail-glow')
+  }
   mailentry.classList.remove("close-mail-entry");
   mailentry.classList.add("open-mail-entry");
   pubkey.classList.remove("key-hidden");
 }
 function hoverOutMailboxTop() {
-  document.querySelector(".handle").classList.remove("mail-glow");
+  document.querySelector(".handle").classList.remove("handle-glow");
   mailentry.classList.add("close-mail-entry");
   mailentry.classList.remove("open-mail-entry");
   pubkey.classList.add("key-hidden");
