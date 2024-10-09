@@ -16,20 +16,20 @@ let radiobtns = document.querySelectorAll(".radiobtn");
 const mailentry = document.querySelector(".mail-entry");
 const mailexit = document.querySelector(".mail-exit");
 const pubkey = document.querySelector(".pubkey");
-const mailfob = document.querySelector('.keyhole')
+const mailfob = document.querySelector(".keyhole");
 const instructionset = {
-  message:document.querySelector('.ins1'),
-  key:document.querySelector('.ins2'),
-  status:document.querySelector('.ins3'),
-  hexstr:document.querySelector('.ins4')
-}
+  message: document.querySelector(".ins1"),
+  key: document.querySelector(".ins2"),
+  status: document.querySelector(".ins3"),
+  hexstr: document.querySelector(".ins4"),
+};
 let clear;
 
 // onload listen event
 window.onload = (e) => {
-  document.querySelector(".env").classList.remove('key-hidden')
-  document.querySelector(".env").style = `left: 50px;`;
-  document.querySelector("#privkey-container").style = `right: 50px;`;
+  document.querySelector(".env").classList.remove("key-hidden");
+  document.querySelector(".env").style = `left: 50px;top:75px;`;
+  document.querySelector("#privkey-container").style = `right: 50px;bottom:100px`;
   // set paragraph pos
   const elemX = formwrapper.clientWidth / 2;
   paras.forEach((x) => (x.style = `left:${elemX - x.clientWidth / 2}px`));
@@ -213,8 +213,6 @@ shadows.forEach((par, i) => {
   };
 });
 
-
-
 // restore input to original state
 function restoreInput(inp, inpval) {
   inp.classList.remove("red-border");
@@ -228,7 +226,7 @@ function restoreInput(inp, inpval) {
 }
 // ready the input for public key encryption
 function readyMessage(inp, inpval) {
-  inp.disabled = true
+  inp.disabled = true;
   securedMessage = !inpval ? "Undefined data" : "Secured Message";
   inp.classList.remove("no-border");
   inp.classList.add("minimize-env");
@@ -259,19 +257,19 @@ mailboxinput.previousElementSibling.onsubmit = (e) => {
 // drag element function
 dragElement(document.querySelector(".env"));
 dragElement(document.querySelector("#privkey-container"));
-mailboxinput.onclick = e => activateInput(mailboxinput)
+mailboxinput.onclick = (e) => activateInput(mailboxinput);
 function dragElement(elmnt) {
   var pos1 = 0,
     pos2 = 0,
     pos3 = 0,
     pos4 = 0;
   elmnt.onmousedown = (e) => dragMouseDown(e);
-  startPos.x = elmnt.getBoundingClientRect().x
-  startPos.y = elmnt.getBoundingClientRect().y
+  startPos.x = elmnt.getBoundingClientRect().x;
+  startPos.y = elmnt.getBoundingClientRect().y;
 
   function dragMouseDown(e) {
     dragging = true;
-    current_drag = e.currentTarget
+    current_drag = e.currentTarget;
     if (e.target !== mailboxinput) {
       e.preventDefault();
       // get the mouse cursor position at startup:
@@ -281,34 +279,42 @@ function dragElement(elmnt) {
       // call a function whenever the cursor moves:
       document.onmousemove = (e) => elementDrag(e);
     }
-    if(elmnt == mailboxinput.parentElement || mailboxinput.focus()){
-        mailfob.classList.remove('unlock-mailbox')
-        mailfob.classList.add('lock-mailbox')
-        mailexit.classList.add('close-mail-exit')
-        mailexit.classList.remove('open-mail-exit')
-        mailfob.classList.add('no-keyglow')
-        mailfob.classList.remove('yes-keyglow')
-        document.querySelector('.decoded-word').classList.add('key-hidden')
-        document.querySelector('.decoded-word').textContent = ''
+    if (elmnt == mailboxinput.parentElement || mailboxinput.focus()) {
+      mailfob.classList.remove("unlock-mailbox");
+      mailfob.classList.add("lock-mailbox");
+      mailexit.classList.add("close-mail-exit");
+      mailexit.classList.remove("open-mail-exit");
+      mailfob.classList.add("no-keyglow");
+      mailfob.classList.remove("yes-keyglow");
+      document.querySelector(".decoded-word").classList.add("key-hidden");
+      document.querySelector(".decoded-word").textContent = "";
     }
   }
 
   function elementDrag(e) {
-    
-    if(current_drag==mailboxinput.parentElement){
-      current_drag.classList.remove('indicate-border')
-        readyMessage(mailboxinput, inpval);
-        if(dragging == true) {
-            if(insideElement(mailentry, { x: e.pageX, y: e.pageY })){
-                hoverOverMailboxTop()
-            } else {
-                mailboxinput.disabled = false
-                hoverOutMailboxTop()
-            }
+    if (current_drag == mailboxinput.parentElement) {
+      current_drag.classList.remove("indicate-border");
+      readyMessage(mailboxinput, inpval);
+      if (dragging == true) {
+        if (insideElement(current_drag, mailentry)) {
+          mailentry.classList.add("mail-glow");
+          hoverOverMailboxTop();
         } else {
-                hoverOutMailboxTop()
+          mailboxinput.disabled = false;
+          hoverOutMailboxTop();
         }
-        
+      } else {
+        hoverOutMailboxTop();
+      }
+    }
+    if(current_drag == document.querySelector('#privkey-container')){
+      if(insideElement(current_drag,mailfob)){
+        mailfob.classList.add('yes-keyglow');
+        mailfob.classList.remove('no-keyglow');
+      } else {
+        mailfob.classList.add('no-keyglow');
+        mailfob.classList.remove('yes-keyglow');
+      }
     }
 
     // calculate the new cursor position:
@@ -324,61 +330,31 @@ function dragElement(elmnt) {
   async function closeDragElement(e) {
     dragging = false;
     hoverOutMailboxTop();
-    
-    if(current_drag==mailboxinput.parentElement){
-        mailboxinput.value = !inpval ? '' : inpval
-        restoreInput(mailboxinput,inpval)
-    }
-    // if private key enters keyhole
-    if(current_drag.id == 'privkey-container' && insideElement(mailfob,{ x: e.pageX, y: e.pageY })){
-        const yesKey = 'mail decrypted'
 
-        instructionset.status.textContent = yesKey
-        mailfob.classList.remove('lock-mailbox')
-        mailfob.classList.add('unlock-mailbox')
-        mailfob.classList.add('mail-glow')
-        mailfob.classList.remove('no-keyglow')
-        mailfob.classList.add('yes-keyglow')
-        mailfob.classList.add('mail-glow')
-        document.querySelector("#privkey-container").style = `right: 50px;`;
-        
-        mailboxinput.parentElement.classList.add('no-pointer')
-        await fetch(`/api/decrypt/${encrypted}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          })
-            .then((r) => r.json())
-            .then((d) => {
-              console.log(d.message);
-              document.querySelector('.decoded-word').textContent = d.message
-            });
-            // hide private key 
-        document.querySelector('.privkey').classList.add('key-hidden')
-        setTimeout(()=>{
-            mailboxinput.parentElement.classList.toggle('indicate-border')
-            mailexit.classList.remove('close-mail-exit')
-            mailexit.classList.add('open-mail-exit')
-            document.querySelector('.decoded-word').classList.remove('key-hidden')
-            mailboxinput.parentElement.classList.remove('no-pointer')
-        },2250)
-    }
-    /* stop moving when mouse button is released:*/
-    if (insideElement(mailentry, { x: e.pageX, y: e.pageY })) {
+    if (current_drag == mailboxinput.parentElement) {
+      mailboxinput.value = !inpval ? "" : inpval;
+      restoreInput(mailboxinput, inpval);
+      /* stop moving when mouse button is released:*/
+      if (insideElement(current_drag, mailentry)) {
         mailboxinput.disabled = true;
-        hoverOutMailboxTop()
+        hoverOutMailboxTop();
         // post message to the server (if not undefined)
+        instructionset.hexstr.classList.remove('key-hidden')
+        // if input is undefined
         if (!inpval) {
           console.log("enter data before dropping");
-          const noData = 'No data inserted'
-          instructionset.status.textContent = noData
-          instructionset.hexstr.textContent = noData
+          const noData = "No data inserted";
+          instructionset.status.textContent = noData;
+          instructionset.hexstr.textContent = noData;
         } else {
-            // reveal private key
-          const yesData = 'mail encrypted'
-          instructionset.status.textContent = yesData
-          instructionset.key.classList.remove('key-hidden')
-          document.querySelector('.privkey').classList.remove('key-hidden')
-          document.querySelector(".env").style = `left: 50px;`;
+          // reveal public key
+          mailentry.classList.remove("mail-glow");
+          const yesData = "mail encrypted";
+          instructionset.status.textContent = yesData;
+          instructionset.key.classList.remove("key-hidden");
+          document.querySelector(".privkey").classList.remove("key-hidden");
+          document.querySelector(".env").style = `left: 50px;top:50px;`;
+          document.querySelector("#privkey-container").style = `right: 50px;bottom:100px`;
           await fetch("/api/encrypt/public", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -389,40 +365,78 @@ function dragElement(elmnt) {
               console.log(d.message);
               // show encrypted data
               instructionset.hexstr.textContent = d.message;
-              return !d.message ? null : encrypted = d.message
+              return !d.message ? null : (encrypted = d.message);
             });
         }
-
-        
       }
-    
+    }
+    // if private key enters keyhole
+    if (
+      current_drag.id == "privkey-container" &&
+      insideElement(current_drag, mailfob)
+    ) {
+      const yesKey = "mail decrypted";
+
+      instructionset.status.textContent = yesKey;
+      mailfob.classList.remove("lock-mailbox");
+      mailfob.classList.add("unlock-mailbox");
+      mailfob.classList.add("mail-glow");
+      mailfob.classList.remove("no-keyglow");
+      mailfob.classList.add("yes-keyglow");
+      mailfob.classList.add("mail-glow");
+      document.querySelector("#privkey-container").style = `right: 50px;`;
+
+      mailboxinput.parentElement.classList.add("no-pointer");
+      await fetch(`/api/decrypt/${encrypted}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          console.log(d.message);
+          document.querySelector(".decoded-word").textContent = d.message;
+        });
+      // hide private key
+      document.querySelector(".privkey").classList.add("key-hidden");
+
+      setTimeout(() => {
+        mailboxinput.parentElement.classList.toggle("indicate-border");
+        mailexit.classList.remove("close-mail-exit");
+        mailexit.classList.add("open-mail-exit");
+        document.querySelector(".decoded-word").classList.remove("key-hidden");
+        mailboxinput.parentElement.classList.remove("no-pointer");
+      }, 2250);
+    }
+
     document.onmousemove = null;
   }
 }
 
-
-
-
 // functions
 function hoverOverMailboxTop() {
-    document.querySelector(".handle").classList.add("mail-glow");
-    mailentry.classList.remove("close-mail-entry");
-    mailentry.classList.add("open-mail-entry");
-    pubkey.classList.remove('key-hidden')
+  document.querySelector(".handle").classList.add("mail-glow");
+  mailentry.classList.remove("close-mail-entry");
+  mailentry.classList.add("open-mail-entry");
+  pubkey.classList.remove("key-hidden");
 }
 function hoverOutMailboxTop() {
-    document.querySelector(".handle").classList.remove("mail-glow");
-    mailentry.classList.add("close-mail-entry");
-    mailentry.classList.remove("open-mail-entry");
-    pubkey.classList.add('key-hidden')
+  document.querySelector(".handle").classList.remove("mail-glow");
+  mailentry.classList.add("close-mail-entry");
+  mailentry.classList.remove("open-mail-entry");
+  pubkey.classList.add("key-hidden");
 }
-function insideElement(elem, pos) {
+function insideElement(curr, elem) {
   let x1, y1, x2, y2;
   x1 = elem.getBoundingClientRect().x;
   y1 = elem.getBoundingClientRect().y;
-  x2 = elem.getBoundingClientRect().x + elem.clientWidth;
-  y2 = elem.getBoundingClientRect().y + elem.clientHeight;
-  return (pos.x <= x2 && pos.x >= x1) && (pos.y <= y2 && pos.y >= y1);
+  x2 = x1 + elem.clientWidth;
+  y2 = y1 + elem.clientHeight;
+  return (
+    (curr.getBoundingClientRect().x + curr.clientWidth/2) <= x2 &&
+    (curr.getBoundingClientRect().x + curr.clientWidth/2) >= x1 &&
+    curr.getBoundingClientRect().y + (curr.clientHeight/2) <= y2 &&
+    curr.getBoundingClientRect().y + (curr.clientHeight/2) >= y1
+  );
 }
 async function copyText(text) {
   try {
@@ -440,7 +454,7 @@ function copyAlert(par) {
 }
 function removeAlert(par) {
   par.classList.remove("no-pointer");
-  let p = par.children[1]||par.children[0];
+  let p = par.children[1] || par.children[0];
   console.log(p);
   par.removeChild(p);
 }
@@ -458,28 +472,27 @@ function regText(elem) {
   elem.classList.add("black-text");
   elem.classList.remove("red-text");
 }
-function activateInput(elm){
-    if(elm.disabled==true){
-        elm.clasList.add('red-border')
-        setTimeout(()=>{
-            elm.classList.remove('minimize-env')
-        },2000)
-    }
+function activateInput(elm) {
+  if (elm.disabled == true) {
+    elm.clasList.add("red-border");
+    setTimeout(() => {
+      elm.classList.remove("minimize-env");
+    }, 2000);
+  }
 }
 
-
 // copy text from ins4 hex text
-instructionset.hexstr.onclick = e => {
-  copyText(e.target.textContent)
-  copyAlert(e.target)
+instructionset.hexstr.onclick = (e) => {
+  copyText(e.target.textContent);
+  copyAlert(e.target);
   setTimeout(() => {
     e.target.classList.remove("copy-click");
   }, 150);
   setTimeout(() => {
     removeAlert(e.target);
   }, 1750);
-}
-// document.onmousemove = e =>{ 
+};
+// document.onmousemove = e =>{
 //     console.log(e.pageX)
 //     if(insideElement(document.getElementById('env-input'),{x:e.pageX,y:e.pageY})){
 //         console.log('you made it')
@@ -488,4 +501,3 @@ instructionset.hexstr.onclick = e => {
 //         console.log('no not there')
 //     }
 // }
-
