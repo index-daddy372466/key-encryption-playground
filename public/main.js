@@ -297,7 +297,6 @@ function dragElement(elmnt) {
       readyMessage(mailboxinput, inpval);
       if (dragging == true) {
         if (insideElement(current_drag, mailentry)) {
-          mailentry.classList.add("mail-glow");
           hoverOverMailboxTop();
         } else {
           mailboxinput.disabled = false;
@@ -353,8 +352,11 @@ function dragElement(elmnt) {
           instructionset.status.textContent = yesData;
           instructionset.key.classList.remove("key-hidden");
           document.querySelector(".privkey").classList.remove("key-hidden");
+          document.querySelector("#privkey-container").classList.add("spring-key");
+          
           document.querySelector(".env").style = `left: 50px;top:50px;`;
           document.querySelector("#privkey-container").style = `right: 50px;bottom:100px`;
+          console.log(document.querySelector("#privkey-container"))
           await fetch("/api/encrypt/public", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -376,7 +378,6 @@ function dragElement(elmnt) {
       insideElement(current_drag, mailfob)
     ) {
       const yesKey = "mail decrypted";
-
       instructionset.status.textContent = yesKey;
       mailfob.classList.remove("lock-mailbox");
       mailfob.classList.add("unlock-mailbox");
@@ -384,7 +385,10 @@ function dragElement(elmnt) {
       mailfob.classList.remove("no-keyglow");
       mailfob.classList.add("yes-keyglow");
       mailfob.classList.add("mail-glow");
-      document.querySelector("#privkey-container").style = `right: 50px;`;
+      document.querySelector("#privkey-container").classList.remove("spring-key");
+      document.querySelector(".privkey").classList.add("key-hidden");
+      
+      document.querySelector("#privkey-container").style = `right: 50px;bottom:100px`;
 
       mailboxinput.parentElement.classList.add("no-pointer");
       await fetch(`/api/decrypt/${encrypted}`, {
@@ -396,8 +400,6 @@ function dragElement(elmnt) {
           console.log(d.message);
           document.querySelector(".decoded-word").textContent = d.message;
         });
-      // hide private key
-      document.querySelector(".privkey").classList.add("key-hidden");
 
       setTimeout(() => {
         mailboxinput.parentElement.classList.toggle("indicate-border");
@@ -415,6 +417,7 @@ function dragElement(elmnt) {
 // functions
 function hoverOverMailboxTop() {
   document.querySelector(".handle").classList.add("mail-glow");
+  mailentry.classList.add('mail-glow')
   mailentry.classList.remove("close-mail-entry");
   mailentry.classList.add("open-mail-entry");
   pubkey.classList.remove("key-hidden");

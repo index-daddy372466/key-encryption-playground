@@ -335,7 +335,7 @@ z-index: 999;
     border-right:8px double rgb(14, 13, 14);
     border-top:8px double rgb(14, 13, 14);
     background:#00f;
-    height:425px;
+    height:75%;
     width:359px;
     display:flex;
     flex-direction: column;
@@ -458,7 +458,17 @@ position:relative;
     align-items:center;
     justify-content: center;
     z-index:999;
-
+}
+.spring-key{
+    animation:springkey .5s forwards ease-out;
+}
+@keyframes springkey {
+    from{
+        transform:translate(0,0) rotate(30deg);
+    }
+    to{
+        transform:translate(0,-25px) rotate(30deg);
+    }
 }
 .privkey{
     font-size:50px;
