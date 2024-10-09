@@ -17,14 +17,34 @@ const mailentry = document.querySelector(".mail-entry");
 const mailexit = document.querySelector(".mail-exit");
 const pubkey = document.querySelector(".pubkey");
 const mailfob = document.querySelector(".keyhole");
+const mailboxinput = document.getElementById("env-input");
+
 const instructionset = {
   message: document.querySelector(".ins1"),
   key: document.querySelector(".ins2"),
   status: document.querySelector(".ins3"),
   hexstr: document.querySelector(".ins4"),
 };
-let clear;
+let inpval,
+  dragging = false,
+  securedMessage,
+  current_drag,
+  encrypted,
+  startPos = {},
+  clear,
+  aess = [...aescontainer];
 
+
+instructionset.hexstr.onclick = (e) => {
+  copyText(e.target.textContent);
+  copyAlert(e.target);
+  setTimeout(() => {
+    e.target.classList.remove("copy-click");
+  }, 150);
+  setTimeout(() => {
+    removeAlert(e.target);
+  }, 1750);
+};
 // onload listen event
 window.onload = (e) => {
   document.querySelector(".env").classList.remove("key-hidden");
@@ -67,7 +87,6 @@ rads.forEach(
     })
 );
 
-let aess = [...aescontainer];
 aess.forEach(
   (r, idx) =>
     (r.onclick = (e) => {
@@ -114,7 +133,6 @@ areas.forEach((d, idx) => {
     }
   };
 });
-
 // encrypt and decrypt onclick events
 encrypt.addEventListener("click", async (e) => {
   clearTimeout(clear);
@@ -181,7 +199,6 @@ decrypt.addEventListener("click", async (e) => {
     });
   clearTextarea(dtextarea);
 });
-
 let decAndenc = [decrypt, encrypt];
 decAndenc.forEach((btn) => {
   btn.onfocus = (e) => {
@@ -191,7 +208,6 @@ decAndenc.forEach((btn) => {
     if (e.currentTarget == btn) e.currentTarget.classList.remove("focus-true");
   };
 });
-
 shadows.forEach((par, i) => {
   let realparas = [epara, dpara];
   const copy = [...document.querySelectorAll(".fa-copy")];
@@ -213,34 +229,7 @@ shadows.forEach((par, i) => {
   };
 });
 
-// restore input to original state
-function restoreInput(inp, inpval) {
-  inp.classList.remove("red-border");
-  inp.setAttribute("draggable", false);
-  inp.classList.remove("minimize-env");
-  inp.classList.add("no-border");
-  inp.value = !inpval ? "" : inpval;
-  console.log(inpval);
-  inp.disabled = false;
-}
-// ready the input for public key encryption
-function readyMessage(inp, inpval) {
-  inp.disabled = true;
-  securedMessage = !inpval ? "Undefined data" : "Secured Message";
-  inp.classList.remove("no-border");
-  inp.classList.add("minimize-env");
-  // send secured message to the server
-  inp.value = securedMessage;
-}
-
 // envelope input
-let inpval,
-  dragging = false,
-  securedMessage,
-  current_drag,
-  encrypted,
-  startPos = {};
-const mailboxinput = document.getElementById("env-input");
 // onblur envelope input
 mailboxinput.onblur = (e) => {
   if (e.target.value) {
@@ -253,6 +242,7 @@ mailboxinput.onblur = (e) => {
 mailboxinput.previousElementSibling.onsubmit = (e) => {
   e.preventDefault();
 };
+
 // drag element function
 dragElement(document.querySelector(".env"));
 dragElement(document.querySelector("#privkey-container"));
@@ -270,6 +260,7 @@ function dragElement(elmnt) {
     if(e.target == mailboxinput.parentElement){
       if(!document.querySelector('.privkey').classList.contains('key-hidden')){
         document.querySelector('.privkey').classList.add('key-hidden')
+        instructionset.key.classList.add('key-hidden')
       }
     }
     dragging = true;
@@ -426,7 +417,95 @@ function dragElement(elmnt) {
   }
 }
 
+// signatures
+const signForm = document.querySelector('#form-sign')
+const verifyForm = document.querySelector('#form-verify')
+const formTextareas = [...document.querySelectorAll('.sign-child-container>textarea')]
+const verifyBtn = document.querySelector('#verify-button')
+const boolarea = document.getElementById('boolarea')
+const plainarea2 = document.querySelector('#plainarea2')
+let rsa = document.getElementById('rsaarea')
+let signatureForms = [signForm,verifyForm]
+signatureForms.forEach(form=>{
+  form.onsubmit = e => {
+    e.preventDefault()
+  }
+})
+formTextareas.forEach(area=>{
+  let signarea = /^plainarea$/.test(area.id)
+
+  if(signarea){
+    console.log(area)
+    area.oninput = async e => {
+      if(e.target.value==''||!e.target.value){
+          rsa.value = ''
+      }
+      boolarea.classList.remove('redbg')
+      boolarea.classList.remove('greenbg')
+      await fetch(`/api/sign/${e.target.value}`,{
+        method:'POST',
+        headers:{
+        'Content-Type':'application/json',
+      },
+    body:JSON.stringify({message:e.target.value})}).then(r=>r.json()).then(d=>{
+      if(d.message){
+        rsa.value = d.message
+        plainarea2.value = e.target.value
+
+      }
+    })
+    }
+  }
+})
+// verify signature
+verifyBtn.onclick = async e => {
+  if(rsa.value){
+    await fetch(`/api/verify/${rsa.value}`,{
+      method:'POST',
+      headers:{
+      'Content-Type':'application/json',
+    },
+    body:JSON.stringify({plain:plainarea2.value})}).then(r=>r.json()).then(d=>{
+      boolarea.textContent = d.bool
+      if(!d.bool){
+        boolarea.classList.remove('greenbg')
+        boolarea.classList.add('redbg')
+      } else { 
+        boolarea.classList.add('greenbg')
+        boolarea.classList.remove('redbg')
+      }
+    })
+  }
+  if(plainarea2.value && !rsa.value){
+    boolarea.textContent = 'data has not been signed'
+    boolarea.classList.add('redbg')
+  }
+  
+}
+
+
+
+
+
 // functions
+// restore input to original state
+function restoreInput(inp, inpval) {
+  inp.classList.remove("red-border");
+  inp.setAttribute("draggable", false);
+  inp.classList.remove("minimize-env");
+  inp.classList.add("no-border");
+  inp.value = !inpval ? "" : inpval;
+  console.log(inpval);
+  inp.disabled = false;
+}
+function readyMessage(inp, inpval) {
+  inp.disabled = true;
+  securedMessage = !inpval ? "Undefined data" : "Secured Message";
+  inp.classList.remove("no-border");
+  inp.classList.add("minimize-env");
+  // send secured message to the server
+  inp.value = securedMessage;
+}
 function hoverOverMailboxTop() {
   document.querySelector(".handle").classList.add("handle-glow");
   mailentry.classList.remove('reg-border')
@@ -502,24 +581,3 @@ function activateInput(elm) {
     }, 2000);
   }
 }
-
-// copy text from ins4 hex text
-instructionset.hexstr.onclick = (e) => {
-  copyText(e.target.textContent);
-  copyAlert(e.target);
-  setTimeout(() => {
-    e.target.classList.remove("copy-click");
-  }, 150);
-  setTimeout(() => {
-    removeAlert(e.target);
-  }, 1750);
-};
-// document.onmousemove = e =>{
-//     console.log(e.pageX)
-//     if(insideElement(document.getElementById('env-input'),{x:e.pageX,y:e.pageY})){
-//         console.log('you made it')
-//     }
-//     else{
-//         console.log('no not there')
-//     }
-// }

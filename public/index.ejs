@@ -16,12 +16,12 @@
         <div class="shadow shadow-enc">
           <i class="fa-regular fa-copy noselect"></i>
         </div>
-        <textarea class="para black-text" rows="4" cols="8" id="encrypt-para" disabled></textarea>
+        <textarea spellcheck="false" class="para black-text" rows="4" cols="8" id="encrypt-para" disabled></textarea>
 
         <form method="POST" action="/api/encrypt">
           <p class="btn-text noselect">Encrypt</p>
           <div id="encrypt-container">
-            <textarea rows="8" type="text" name="encrypt" id="encrypt-input" maxlength="250" placeholder="Type or paste a message"></textarea>
+            <textarea spellcheck="false" rows="8" type="text" name="encrypt" id="encrypt-input" maxlength="250" placeholder="Type or paste a message"></textarea>
             <div id="r16" class="radio-container">
               <input type="radio" class="radiobtn 16" name="keylen" id="sixteen">
               <label class="noselect" for="sixteen">16-bit</label>
@@ -56,11 +56,11 @@
         <div class="shadow shadow-dec">
           <i class="fa-regular fa-copy noselect"></i>
         </div>
-        <textarea class="para black-text" rows="4" cols="8" id="decrypt-para" disabled></textarea>
+        <textarea spellcheck="false" class="para black-text" rows="4" cols="8" id="decrypt-para" disabled></textarea>
         <form method="POST" action="/api/decrypt">
           <p class="btn-text noselect">Decrypt</p>
           <div id="decrypt-container">
-            <textarea rows="8" type="text" name="decrypt" id="decrypt-input" maxlength="250" placeholder="Type or paste the encrypted message"></textarea>
+            <textarea spellcheck="false" rows="8" type="text" name="decrypt" id="decrypt-input" maxlength="250" placeholder="Type or paste the encrypted message"></textarea>
             <input type="button" class="btn" id="decrypt"/>
           </div>
         </form>
@@ -119,7 +119,37 @@
       </div>
     </div>
     <div class="title"><h1>Encrypt <b style="color:red">Signature</b> with Private & Decrypt with Public</h1></div>
-    <div id="wrapper3" class="wrapper-container"></div>
+    <!-- signature wrapper -->
+    <div id="wrapper3" class="wrapper-container">
+      <!-- sign -->
+      <form action="/api/sign/private"  id="form-sign" class="key-hidden absolute"></form>
+      <form action="/api/verify/:signature"  id="form-verify" class="key-hidden absolute"></form>
+      <div id="sign-container">
+        <h2 class="title sign-title">Sender</h2>
+        <div id="plain-text-container" class="sign-child-container">
+          <textarea spellcheck="false" name="plain" for="form-sign" id="plainarea"></textarea>
+        </div>
+        <div id="rsa-container" class="sign-child-container">
+          <textarea spellcheck="false" name="rsa" for="form-verify" id="rsaarea" disabled></textarea>
+        </div>
+      </div>
+      <!-- verify -->
+      <div id="verify-container">
+        <h2 class="title verify-title">Recipient</h2>
+        <!-- plain text from plainarea -->
+        <div id="plain2-container" class="sign-child-container">
+          <textarea spellcheck="false" name="plain" for="form-verify" id="plainarea2"></textarea>
+        </div>
+        <!-- verify the signature here -->
+        <div id="bool-container" class="sign-child-container">
+          <h2 id="boolarea"></h2>
+        </div>
+      </div>
+
+      <!-- verify signature button -->
+       <input type="submit" id="verify-button" for="form-verify" value="Verify">
+
+    </div>
   </body>
   <script type="module" src="main.js"></script>
 </html>

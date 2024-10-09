@@ -197,25 +197,25 @@ app.route("/api/decrypt/:message").get((req, res) => {
 });
 
 // sign data and create signature with private key
-app.route('/api/sign/private').get((req,res)=>{
-let data = 'testing'
-let sign = createSign('rsa-sha256')
-sign.update(data)
-let signature = sign.sign(privKey,'hex')
-console.log(signature)
-res.send('signature created')
+app.route('/api/sign/:message').post((req,res)=>{
+  const message = req.params.message
+  let sign = createSign('rsa-sha256')
+  sign.update(message)
+  let signature = sign.sign(privKey,'hex')
+  console.log(signature)
+  res.json({message:signature})
 })
 // verify data for integrity with public key
-app.route('/api/verify/:signature').get((req,res)=>{
+app.route('/api/verify/:signature').post((req,res)=>{
+  const {plain} = req.body
+  const {signature} = req.params
   // ensure data is not tampered
-  let data = 'testig'
   const verify = createVerify('rsa-sha256')
-  verify.update(data)
-  const isVerified = verify.verify(pubKey,req.params.signature,'hex')
+  verify.update(plain)
+  const isVerified = verify.verify(pubKey,signature,'hex')
   console.log(isVerified)
-  res.send('verify signature')
+  res.json({bool:isVerified})
 })
-
 
 
 // encrypt users
