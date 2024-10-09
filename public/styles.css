@@ -48,7 +48,7 @@ gap:1rem;
 .ins1,.ins2{
     margin-bottom:3rem;
 }
-.noselect,.ins1,.ins2,.ins3,.decoded-word {
+.noselect,.ins1,.ins2,.ins3,.ins4 {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -403,6 +403,7 @@ position:relative;
     max-height:100px;
     position: absolute;
     top:10px;
+    text-align:center;
 }
 .open-mail-entry{
     border-top:4rem solid black;
