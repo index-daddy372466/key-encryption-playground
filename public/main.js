@@ -222,7 +222,6 @@ function restoreInput(inp, inpval) {
   inp.value = !inpval ? "" : inpval;
   console.log(inpval);
   inp.disabled = false;
-  inp.focus();
 }
 // ready the input for public key encryption
 function readyMessage(inp, inpval) {
@@ -268,6 +267,11 @@ function dragElement(elmnt) {
   startPos.y = elmnt.getBoundingClientRect().y;
 
   function dragMouseDown(e) {
+    if(e.target == mailboxinput.parentElement){
+      if(!document.querySelector('.privkey').classList.contains('key-hidden')){
+        document.querySelector('.privkey').classList.add('key-hidden')
+      }
+    }
     dragging = true;
     current_drag = e.currentTarget;
     if (e.target !== mailboxinput) {
@@ -294,7 +298,7 @@ function dragElement(elmnt) {
   function elementDrag(e) {
     if (current_drag == mailboxinput.parentElement) {
       current_drag.classList.remove("indicate-border");
-      document.querySelector(".privkey").classList.add('key-hidden')
+      // document.querySelector(".privkey").classList.add('key-hidden')
       readyMessage(mailboxinput, inpval);
       if (dragging == true) {
         if (insideElement(current_drag, mailentry)) {
@@ -306,6 +310,7 @@ function dragElement(elmnt) {
       } else {
         hoverOutMailboxTop();
       }
+
     }
     if(current_drag == document.querySelector('#privkey-container')){
       if(insideElement(current_drag,mailfob)){
@@ -330,9 +335,11 @@ function dragElement(elmnt) {
   async function closeDragElement(e) {
     dragging = false;
     hoverOutMailboxTop();
-
+    // if current_drag == .env element
     if (current_drag == mailboxinput.parentElement) {
+      // set mailbox value
       mailboxinput.value = !inpval ? "" : inpval;
+      // restore input
       restoreInput(mailboxinput, inpval);
       /* stop moving when mouse button is released:*/
       if (insideElement(current_drag, mailentry)) {
