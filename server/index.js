@@ -12,6 +12,8 @@ const {
   createHmac,
   createDecipheriv,
   randomBytes,
+  createVerify,
+  createSign,
 } = require("crypto");
 const crypto = require("crypto");
 // generage pub key
@@ -193,6 +195,28 @@ app.route("/api/decrypt/:message").get((req, res) => {
     throw new Error(err);
   }
 });
+
+// sign data and create signature with private key
+app.route('/api/sign/private').get((req,res)=>{
+let data = 'testing'
+let sign = createSign('rsa-sha256')
+sign.update(data)
+let signature = sign.sign(privKey,'hex')
+console.log(signature)
+res.send('signature created')
+})
+// verify data for integrity with public key
+app.route('/api/verify/:signature').get((req,res)=>{
+  // ensure data is not tampered
+  let data = 'testig'
+  const verify = createVerify('rsa-sha256')
+  verify.update(data)
+  const isVerified = verify.verify(pubKey,req.params.signature,'hex')
+  console.log(isVerified)
+  res.send('verify signature')
+})
+
+
 
 // encrypt users
 function encryptUsers(req, res, next) {
