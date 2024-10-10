@@ -39,6 +39,11 @@ body{
     align-items: center;
     justify-content: center;
 }
+.noteortip{
+    color:#f00;
+    text-align: center;
+    width:100%;
+}
 #form-wrapper
 {
 display:flex;
@@ -343,6 +348,7 @@ z-index: 999;
     background:#00f;
     height:75%;
     width:359px;
+    min-width:275px;
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -458,6 +464,10 @@ position:relative;
     color:rgb(3, 239, 3);
     top:5px;
 }
+.pubkey2{
+    font-size:50px;
+    color:rgb(3, 239, 3);
+}
 #privkey-container{
     height:45px;
     width:60px;
@@ -479,7 +489,7 @@ position:relative;
         transform:translate(0,-25px) rotate(30deg);
     }
 }
-.privkey{
+.privkey,.privkey2{
     font-size:50px;
     color:rgb(247, 10, 53);
 }

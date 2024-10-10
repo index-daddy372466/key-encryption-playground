@@ -66,6 +66,7 @@
         </form>
       </div>
     </div>
+    <div style="text-align: center;margin:0 auto;"></div>
     <div class="title"><h1>Encrypt <b style="color:red">Data</b> with Public & Decrypt with Private</h1></div>
     <div id="wrapper2" class="wrapper-container">
       <div class="ins-text ins4 key-hidden absolute"></div>
@@ -118,7 +119,9 @@
         <i class="fa-solid fa-key privkey key-hidden"></i>
       </div>
     </div>
-    <div class="title"><h1>Encrypt <b style="color:red">Signature</b> with Private & Decrypt with Public</h1></div>
+    <div class="title"><h1>Create <b style="color:red">Signature</b> with Private & Verify with Public</h1>
+     <em><h4 class="noteortip"><b>NOTE: the module below does not display encryption/decryption for purpose of displaying the signing & verification process.</b></h4></em>
+    </div>
     <!-- signature wrapper -->
     <div id="wrapper3" class="wrapper-container">
       <!-- sign -->
@@ -126,16 +129,19 @@
       <form action="/api/verify/:signature"  id="form-verify" class="key-hidden absolute"></form>
       <div id="sign-container">
         <h2 class="title sign-title">Sender</h2>
+        <i class="fa-solid fa-key privkey2"></i>
         <div id="plain-text-container" class="sign-child-container">
           <textarea spellcheck="false" name="plain" for="form-sign" id="plainarea"></textarea>
         </div>
         <div id="rsa-container" class="sign-child-container">
-          <textarea spellcheck="false" name="rsa" for="form-verify" id="rsaarea" disabled></textarea>
+          <textarea spellcheck="falsse" name="rsa" for="form-verify" id="rsaarea" disabled></textarea>
         </div>
       </div>
       <!-- verify -->
       <div id="verify-container">
+        <i class="fa-solid fa-key pubkey2"></i>
         <h2 class="title verify-title">Recipient</h2>
+  
         <!-- plain text from plainarea -->
         <div id="plain2-container" class="sign-child-container">
           <textarea spellcheck="false" name="plain" for="form-verify" id="plainarea2"></textarea>

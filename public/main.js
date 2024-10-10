@@ -253,11 +253,12 @@ function dragElement(elmnt) {
     pos3 = 0,
     pos4 = 0;
   elmnt.onmousedown = (e) => dragMouseDown(e);
+  elmnt.ontouchstart = e => dragMouseDown(e)
   startPos.x = elmnt.getBoundingClientRect().x;
   startPos.y = elmnt.getBoundingClientRect().y;
 
   function dragMouseDown(e) {
-    if(e.target == mailboxinput.parentElement){
+    if(e.currentTarget == mailboxinput.parentElement){
       if(!document.querySelector('.privkey').classList.contains('key-hidden')){
         document.querySelector('.privkey').classList.add('key-hidden')
         instructionset.key.classList.add('key-hidden')
@@ -273,6 +274,7 @@ function dragElement(elmnt) {
       document.onmouseup = (e) => closeDragElement(e);
       // call a function whenever the cursor moves:
       document.onmousemove = (e) => elementDrag(e);
+      document.addEventListener('touchmove',elementDrag)
     }
     if (elmnt == mailboxinput.parentElement || mailboxinput.focus()) {
       mailfob.classList.remove("unlock-mailbox");
@@ -287,9 +289,10 @@ function dragElement(elmnt) {
   }
 
   function elementDrag(e) {
+    console.log(e.clientX,e.clientY)
+    // if drag == mailbox (yellow borders)
     if (current_drag == mailboxinput.parentElement) {
       current_drag.classList.remove("indicate-border");
-      // document.querySelector(".privkey").classList.add('key-hidden')
       readyMessage(mailboxinput, inpval);
       if (dragging == true) {
         if (insideElement(current_drag, mailentry)) {
@@ -303,6 +306,7 @@ function dragElement(elmnt) {
       }
 
     }
+    // if drag == red private key
     if(current_drag == document.querySelector('#privkey-container')){
       if(insideElement(current_drag,mailfob)){
         mailfob.classList.add('yes-keyglow');
@@ -312,13 +316,14 @@ function dragElement(elmnt) {
         mailfob.classList.remove('yes-keyglow');
       }
     }
-
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
+    // startX = e.changedTouches[0].pageX;
+    // startY = e.changedTouches[0].pageY;
+    // new X,Y position:
+    pos1 = pos3 - e.clientX|e
+    pos2 = pos4 - e.clientY|e
     pos3 = e.clientX;
     pos4 = e.clientY;
-    // set the element's new position:
+    // set new position:
     elmnt.style.top = elmnt.offsetTop - pos2 + "px";
     elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
   }
@@ -442,6 +447,8 @@ formTextareas.forEach(area=>{
       }
       boolarea.classList.remove('redbg')
       boolarea.classList.remove('greenbg')
+      boolarea.textContent = ''
+      e.target.value = releaseBeast(e.target.value)
       await fetch(`/api/sign/${e.target.value}`,{
         method:'POST',
         headers:{
@@ -480,6 +487,10 @@ verifyBtn.onclick = async e => {
     boolarea.textContent = 'data has not been signed'
     boolarea.classList.add('redbg')
   }
+  if(!plainarea2.value && rsa.value){
+    boolarea.textContent = 'no message to verify'
+    boolarea.classList.add('redbg')
+  }
   
 }
 
@@ -489,6 +500,9 @@ verifyBtn.onclick = async e => {
 
 // functions
 // restore input to original state
+function releaseBeast(text){
+  return text.replace(/[\/|\\|~|*|\r|\n]/gi,'')
+}
 function restoreInput(inp, inpval) {
   inp.classList.remove("red-border");
   inp.setAttribute("draggable", false);
