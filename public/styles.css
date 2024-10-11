@@ -628,7 +628,17 @@ animation: unlockmb 1.5s forwards ease;
         font-size:8px;
     }
 #wrapper2{
-    width:500px;
+    flex-direction: column;
+    align-items: center;
+    width:100%;
+    gap:0;
+    padding-top:6.5rem;
+}
+.wrapper-container{
+    height:100vh;
+}
+.ins1{
+    margin-bottom: 0;
 }
     #form-wrapper{
         display:flex;
