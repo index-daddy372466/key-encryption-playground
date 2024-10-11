@@ -94,11 +94,14 @@ app.route("/api/encrypt").post((req, res) => {
       req.session.key = Buffer.alloc(keylen, key);
       iv = randomBytes([16,32,24][Math.floor(Math.random()*3)]);
       const cipher = createCipheriv(`aes-${aes}-gcm`, req.session.key, iv);
-
+      console.log('current key')
+      console.log(req.session.key);
       console.log("initial vector (encrypt)");
       console.log(iv);
       const encryptedMessage =
         cipher.update(encrypt, "utf-8", "hex") + cipher.final("hex");
+        console.log("\nEncrypted message")
+        console.log(encryptedMessage)
       res.json({ message: encryptedMessage });
     } else {
       res.json({ message: "err" });
@@ -129,6 +132,8 @@ app.route("/api/decrypt").post((req, res) => {
       );
       console.log("initial vector (decrypt)");
       console.log(iv);
+      console.log("key to decrypt");
+      console.log(Buffer.from(req.session.key));
       const decryptedMessage = Buffer.from(
         decipher.update(Buffer.from(decrypt, "hex"), "utf-8")
       );

@@ -3,19 +3,21 @@
 ## Intro
 Welcome to the KEP service where data is seen and unseen! This service explores Public Key Infrastructure (PKI) by simulating:
 1) Key management on the server & client
-2) Encryption/Decryption
-3) Signing & verifying the integrity of data
+2) Symmetric encryption (same key)
+3) Asymmetric encryption (2 different keys)
+4) Signing & verifying the integrity of data
 ## Objectives
 <div style='text-align:left;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;font-size:18px'>
 <ol style='display:flex;flex-direction:column;align-items:start;justify-content:center;width:100%;font-size:18px'>
-<li>Distinction between a public & private keys</li>
+<li>Distinction between public & private keys</li>
 <li>Distinction between the ecryption process & signature process</li>
 </ol>
 </div>
 
 ## Generating Key pairs from a server
 Require crypto & configure options regarding to setting up the public/private key infrastructure.<br>
-Public & Priate Keys are generated from a function [ genKeys() ].<br>
+While there are a many ways to spawn Public & Priate Keys, our server generates keys from the function crypto.generateKeyPairSync.
+At most, the arguments needed would be the modulus length, privateKeyEncoding options & publicKeyEncoding options.<br>
 
 **File location:** <em>./encryption/genKeys.js</em>
 ```
@@ -55,10 +57,11 @@ function genKeys(){
   ```
 
 When the server starts, 1 public key & 1 private key is generated for the entire server session.<br> It would not make sense to dynamically regenerate new keys during a server session because this practice can alter the trust & encryption of keys across all clients.<br>
-**For Instance** <br><em>Think about the relationship between the myth of <b>Santa Claus</b> and the average <b>homeowner.</b> The common belief is that on Christmas Eve, 1 time a year, Santa would travel from home to home, sneaking in your chimney & dropping gifts for the whole family.<br>Now imagine <b>Santa</b> attempting the action on a random day of the year <b>without reindeer & presents</b><br> This would break the contract between Santa & the homeowner. Santa's <b>TRUST/INTEGRITY</b> will get tried in court for not following protocol & scaring kids on random days of the year.<br>In addition, this might not even be the real Santa. They can be a fraud/burgler who <b>ENCODED</b> themselves as santa, but was easily <b>DECODED</b> by the homeowner since the fraud did not come with presents or flying deer. Basically, the fraud-Santa gave the homeowner the keys to see through their criminal act.</em>
+**For Instance** <br><em>Think about the relationship between the myth of <b>Santa Claus</b> and the average <b>homeowner.</b> The common belief is that on Christmas Eve, 1 time a year, Santa would travel from home to home, sneaking in your chimney & dropping gifts for the whole family.<br>Now imagine <b>Santa</b> attempting the action on a random day of the year <b>without reindeer & presents</b><br> This would break the contract between Santa & the homeowner. Santa's <b>TRUST/INTEGRITY</b> will get tried in court for not following protocol & scaring kids on random days of the year.<br>In addition, this might not even be the real Santa. They can be a fraud/burgler who <b>TAMPERED SANTA'S SIGNATURE</b>, but was <b>FALSLEY VERIFIED</b> by the homeowner since the fraud did not fit the role.They did not even come with presents or flying deer.</em>
 ## Key pair importance
-There is much significance when public/private key-pairs are generated together & not used outside of their bubble. Think of key-pairs as twins who connect on a mental-mathematical level. They can't think like this with anyone else except with their biological twin. One twin will assist in sign/encrypt process, and the other twin will assist verify/decrypt process. during the crutial moments of authentication & decryption, if one twin does not recognize the other, or not present, the operation can fail, maintaining the integrity & security of the data sent.
+There is much significance when public/private key-pairs are generated together & not used outside of their bubble. Think of key-pairs as twins who connect on a mental-mathematical level. They cannot think like this with anyone else except with their biological twin. One twin will assist in sign/encrypt process, and the other twin will assist verify/decrypt process. during the crutial moments of authentication & decryption, if one twin does not recognize the other, or not present, the operation can fail, maintaining the integrity & security of the data sent.
 <div style="width:100%;text-align:center;"><h2>Symmetric Encryption</h2></div>
+
 **Note**: While there are many symmetric encryption standards to choose from, this service will be working closely with the <b>Authentication Encryption Standard (AES)</b>.
 
 ## Cipher & Decipher
@@ -77,7 +80,7 @@ The key is stored in the user's session for the purpose of **symmetric ecryption
 req.session.key = Buffer.alloc(keylen, key)
 </code><br>
 
-Next, we create the **Initialization Vector**(IV), which adds cryptographic variance, making it much harder to crach the cipher.<br>
+Next, we create the **Initialization Vector**(IV), which adds cryptographic variance, making it a little more difficult to crack the cipher.<br>
 The IV changes everytime the user attempts to **ENCODE** a message in the module.
 Keep in mind that the IV does not need a size because the IV can decrease/increase it's size dynamically.<br>
 <code>
@@ -85,7 +88,7 @@ iv = randomBytes(16);
 </code><br>
 
 Finally, we decide an algorithm, or an encryption standard that will fit our module's needs.<br>
-Keep in mind that the decoder & encoder typically use the same algorithm when **creating a cipher and decipher**<br>
+Keep in mind that the decoder & encoder typically use the same algorithm when **creating a cipher and decipher**.<br>
 We are using algorithm **aes-[128,192,256]-gcm**<br>
 <code>
 `aes-${aes}-gcm`
@@ -94,7 +97,7 @@ We are using algorithm **aes-[128,192,256]-gcm**<br>
 **TIP** The encoder/decoder allows the clinet to choose different bit encryption **[128,192,256]** and the **number of bytes** that represents the key's length. If the byte length does not calculate properly in the the number of bits, an error is thrown.<br> 
 **Rule of thumb** - <em style='color:orange;'>1 byte is equal to 8 bits</em>
 
-**TIP** The acting public key must be the same, but the IV must change after decryption. This is the power of the IV when encrypting and decrypting a message.
+**TIP** While the acting public key is constant, the IV is expected to change after decryption completes. This is the power of the IV when encrypting and decrypting a message.
 
 <div style='display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;'>
 <img style='border:none;' src="./media/symmetric encryption.jpg"/>
