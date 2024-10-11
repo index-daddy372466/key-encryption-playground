@@ -242,7 +242,7 @@ The module above displays a sender signing [**not encrypting**] their message wi
 
 <img style='border:none;' src="./media/signature3.jpg"/>
 
-The module above displays a sender verifying [**not decrypting**] their message with a **public key** to ensure the message maintains its integrity.
+The module above displays a recipient verifying [**not decrypting**] their message with a **public key** to ensure the message maintains its integrity.
 
 ### Signature/Verification errors
 
