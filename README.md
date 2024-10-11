@@ -248,12 +248,6 @@ The module above displays a sender signing [**not encrypting**] their message wi
 
 The module above displays a recipient verifying [**not decrypting**] their message with a **public key** to ensure the message maintains its integrity.
 
-### Signature/Verification errors
-
-<img style='border:none;' src="./media/signature4.jpg"/>
-
-The module above displays how data is **tampered** after verifying with a public key. In other words, the data cannot be trusted.
-
 ```
 const {plain} = req.body
   const {signature} = req.params
@@ -271,6 +265,13 @@ const {plain} = req.body
     throw new Error(err)
   }
 ```
+
+### Signature/Verification errors
+
+<img style='border:none;' src="./media/signature4.jpg"/>
+
+The module above displays how data is **tampered** after verifying with a public key. In other words, the data cannot be trusted.
+
 <img style='border:none;' src="./media/signature5.jpg"/>
 
 The module above displays how data has **not been signed**
