@@ -4,12 +4,12 @@
 Welcome to the KEP service where data is seen and unseen! This service explores Public Key Infrastructure (PKI) by simulating:
 1) Key management on the server & client
 2) Encryption/Decryption
-3) Signing & testing the integrity of data
+3) Signing & verifying the integrity of data
 ## Objectives
 <div style='text-align:left;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;font-size:18px'>
 <ol style='display:flex;flex-direction:column;align-items:start;justify-content:center;width:100%;font-size:18px'>
 <li>Distinction between a public & private keys</li>
-<li>Distinction between the ecryption & signatures</li>
+<li>Distinction between the ecryption process & signature process</li>
 </ol>
 </div>
 
@@ -59,9 +59,11 @@ When the server starts, 1 public key & 1 private key is generated for the entire
 ## Key pair importance
 There is much significance when public/private key-pairs are generated together & not used outside of their bubble. Think of key-pairs as twins who connect on a mental-mathematical level. They can't think like this with anyone else except with their biological twin. One twin will assist in sign/encrypt process, and the other twin will assist verify/decrypt process. during the crutial moments of authentication & decryption, if one twin does not recognize the other, or not present, the operation can fail, maintaining the integrity & security of the data sent.
 <div style="width:100%;text-align:center;"><h2>Symmetric Encryption</h2></div>
+**Note**: While there are many symmetric encryption standards to choose from, this service will be working closely with the <b>Authentication Encryption Standard (AES)</b>.
+
 ## Cipher & Decipher
 <!-- one byte is equal to eight bits -->
-Cipher, Decipher, Encoder, Decoder...call this whatever you like.
+Cipher/Decipher, Encoder/Decoder, Encryptor/Decryptor...call this module what best suits your memory.
 This module begins with generating a hashed-key with Hash-based message authentication code(HMAC) and converting to hex value.<br>
 ```
 key = createHmac("sha256", process.env.SECRETY)
@@ -74,65 +76,205 @@ The key is stored in the user's session for the purpose of **symmetric ecryption
 <code>
 req.session.key = Buffer.alloc(keylen, key)
 </code><br>
+
 Next, we create the **Initialization Vector**(IV), which adds cryptographic variance, making it much harder to crach the cipher.<br>
-The IV changes everytime the user attempts to **ENCODE** a message in the module.<br>
+The IV changes everytime the user attempts to **ENCODE** a message in the module.
+Keep in mind that the IV does not need a size because the IV can decrease/increase it's size dynamically.<br>
 <code>
 iv = randomBytes(16);
 </code><br>
+
 Finally, we decide an algorithm, or an encryption standard that will fit our module's needs.<br>
 Keep in mind that the decoder & encoder typically use the same algorithm when **creating a cipher and decipher**<br>
 We are using algorithm **aes-[128,192,256]-gcm**<br>
 <code>
 `aes-${aes}-gcm`
 </code><br>
+
 **TIP** The encoder/decoder allows the clinet to choose different bit encryption **[128,192,256]** and the **number of bytes** that represents the key's length. If the byte length does not calculate properly in the the number of bits, an error is thrown.<br> 
-**Rule of thumb** - <em>1 byte is equal to 8 bits</em>
+**Rule of thumb** - <em style='color:orange;'>1 byte is equal to 8 bits</em>
 
 **TIP** The acting public key must be the same, but the IV must change after decryption. This is the power of the IV when encrypting and decrypting a message.
 
-<div style='text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;'>
+<div style='display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;'>
 <img style='border:none;' src="./media/symmetric encryption.jpg"/>
 <img style='border:none;' src="./media/symmetric2.jpg"/>
 <!-- createcipheriv -->
 
 ### Cipher is created above
+ We pass 3 arguments: **Algorithm, Key & IV**
+
 The cipher is created with **crypto's** ```createCipheriv()``` function:<br>
 <code>
-const cipher = createCipheriv(`aes-${aes}-gcm`, req.session.key, iv)</code>
-
-We pass 3 arguments: **Algorithm, Key & IV**<br>
+const cipher = createCipheriv(`aes-${aes}-gcm`, req.session.key, iv)</code><br>
+After creating the encrypted message in the server, the message is sent back to the client.
 
 <img style='border:none;' src="./media/128.jpg"/>
 <!-- createDecipheriv -->
 
 ### Decipher is created above
+ We pass 3 arguments: **Algorithm, Key & IV**
+
 The cipher is created with **crypto's** ```createDecipheriv()``` function:<br>
 <code>const decipher = createDecipheriv(`aes-${req.session.aes}-gcm`,
         Buffer.from(req.session.key),
-        Buffer.from(iv))</code>
-
- We pass 3 arguments: **Algorithm, Key & IV**
-
-<img style='border:none;' src="./media/192.jpg"/>
-<img style='border:none;' src="./media/256.jpg"/>
+        Buffer.from(iv))</code><br>
+        After decrypting the encrypted message in the server, the result/message is sent back to the client.
 
 ### Symmetric encryption errors
 <img style='border:none;' src="./media/symmetric4.jpg"/>
-
 <img style='border:none;' src="./media/symmetric3.jpg"/>
+Since the key & the Initialization Vector (IV) are known between the encoder & decoder, sending messages should be a breeze, however there are few conditions that need to be met:
+
+**AES Bit length : Byte length ratio**<br>
+Remember the rule of thumb from earlier? [ **Rule of thumb** - <em style='color:orange;'>1 byte is equal to 8 bits</em> ]<br>
+The **key size** refers to the **number of transformation rounds** that encrypt the data(payload).
+If the key's length is too short or too long for the standard, an <em style='text-decoration:underline;'>Invalid key length</em> error is displayed.<br>
+128-bit keys | 16 bytes | 12 rounds<br>
+192-bit keys | 24 bytes | 14 rounds<br>
+256-bit keys | 32 bytes | 16 rounds<br>
+
+**The encrypted message is not altered before decryption**<br>
+This error occurs if the encrypted message does not match the intended encryption output.
+
+**Active client-session**<br>
+This error is application specific in that the user's cookie-session expired after **60000 (60) seconds**. If a message was encrypted before client session expires, the encrypted value will fail decryption because each user-session stores the ```req.session.key``` value to pass onto the decrypt api, so upon expiration, the user's session-object ends & respawns under a **new id**. The id is based off of the current time ```new Date()``` & ciphered with aes-256 bit encryption. Since both key & IV is required to decipher the encrypted user's id, both properties are set to randomly generated bytes. There is no database involved to track users.
 
 <div style="width:100%;text-align:center;"><h2>Asymmetric Encryption</h2></div>
+
+Asymmetric can be described as:<br>
+- <em>A key that fits a keyhole</em><br>
+- <em>A missing piece to a puzzle</em><br>
+- <em>5 firebenders required to open Avatar Roku's gnarly, metal door.</em><br>
+<img style='border:none;transform:scale(.8)' src="./media/rokudoor.png"/>
+- <em>The Yin & Yang Koi-fish that swim in the pond of the Northern Water Tribe</em><br>
+
+<img style='border:none;width:200px;transform:rotate(90deg);' src="./media/coy.jpg"/>
+
+Asymmetric Encryption, or Public Key Encryption takes place with a generated key pair, like we talked about above, & linking the keys together to decrypt the message.<br>Without confusion, asymmetric encryption differs from Signing and verifying data in that **Data is encrypted with a public Key & Decrypted with a public key**. <br>
+## Encrypt with Public Key
+
 <img style='border:none;' src="./media/asymmetric1.jpg"/>
+The module above displays one of the basic usees of a postal service. A message is created & dropped in the mail. After the mail is dropped, it transforms into encrypted data thanks to the **mailbox entry bin** or the public key.
+
+```
+const message = req.body.message;
+  try {
+    if (message) {
+      // buffer the message
+      const buffer = Buffer.from(message)
+      // encrypt data
+      let encryptedData = crypto.publicEncrypt(
+        pubKey,
+        buffer
+      );
+      // convert encrypted data to hex
+      let encData = encryptedData.toString('hex')
+      // return json encrypted data
+      res.json({
+        message: encData,
+      });
+    } else {
+      console.log(message);
+      res.json({ message: undefined });
+    }
+  } catch (err) {
+    throw new Error(err);
+  }
+  ```
+
+  ## Decrypt with Private Key
+
 <img style='border:none;' src="./media/asymmetric2.jpg"/>
 
+After encryption is complete, the postal worker will unlock the mailbox with their **metal key** (private key). The messanger's key seems to **fit perfectly** with the public key, therefore given them the ability to decrypt the mail.
+
+```
+const message = req.params.message;
+  console.log(message)
+  try {
+    if (message) {
+      // buffer the hex data from encrypted message
+      const buffer = Buffer.from(message,'hex')
+      // decrypt data with private key 
+      let decData = crypto.privateDecrypt(
+        privKey,
+        buffer
+      );
+      // send decrypted data
+      res.json({ message: decData.toString('utf-8') });
+    } else {
+      res.json({ message: undefined });
+    }
+  } catch (err) {
+    throw new Error(err);
+  }
+```
 <div style="width:100%;text-align:center;"><h2>Signature & Verification</h2></div>
 
+### Signatures, or Digital Signatures, is another layer of security with 2 conditions:<br>
+Data is expected to be **1) transmitted with integrity** by the source &
+**2) properly verified** by the destination.<br>
+During the signing process, a sign is created with **rsa-sha256**, or a hash. Next, the sign is updated with the message (or encrypted message). Finally the sign, <em>signs</em> the data with the private key.
 <img style='border:none;' src="./media/signature7.jpg"/>
 <img style='border:none;' src="./media/signature1.jpg"/>
-<img style='border:none;' src="./media/signature2.jpg"/>
-<img style='border:none;' src="./media/signature3.jpg"/>
-<img style='border:none;' src="./media/signature4.jpg"/>
-<img style='border:none;' src="./media/signature5.jpg"/>
-<img style='border:none;' src="./media/signature6.jpg"/>
 
+<img style='border:none;' src="./media/signature2.jpg"/>
+
+The module above displays a sender signing [**not encrypting**] their message with a **private key** to prove that the message came from them.
+
+```
+ const message = req.params.message
+  
+  try{
+    if(message){
+      let sign = createSign('rsa-sha256')
+      sign.update(message)
+      let signature = sign.sign(privKey,'hex')
+      console.log(signature)
+      res.json({message:signature})
+    }
+  } 
+  catch(err){
+    throw new Error(err)
+  }
+```
+
+<img style='border:none;' src="./media/signature3.jpg"/>
+
+The module above displays a sender verifying [**not decrypting**] their message with a **private key** to prove that the message came from them.
+
+### Signature/Verification errors
+
+<img style='border:none;' src="./media/signature4.jpg"/>
+
+The module above displays how data is **tampered** after verifying with a public key. In other words, the data cannot be trusted.
+
+```
+const {plain} = req.body
+  const {signature} = req.params
+  try{
+    if(signature){
+      // ensure data is not tampered
+    const verify = createVerify('rsa-sha256')
+    verify.update(plain)
+    const isVerified = verify.verify(pubKey,signature,'hex')
+    console.log(isVerified)
+    res.json({bool:isVerified})
+  }
+  } 
+  catch(err){
+    throw new Error(err)
+  }
+```
+<img style='border:none;' src="./media/signature5.jpg"/>
+The module above displays how data has **not been signed**
+<img style='border:none;' src="./media/signature6.jpg"/>
+The module above displays how the client requires **message/payload** to sign or update.
 </div>
+
+### Conclusion
+In conclusion, the goal of this service is to break down the differences & uses between symmetric/asymmetric encryption, as well as the differences between encryption & signatures. 
+I am confident that the more this service is used, the faster the understanding will set in.
+
+Enjoy

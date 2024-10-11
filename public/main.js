@@ -289,7 +289,7 @@ function dragElement(elmnt) {
   }
 
   function elementDrag(e) {
-    console.log(e.clientX,e.clientY)
+    // console.log(e.clientX,e.clientY)
     // if drag == mailbox (yellow borders)
     if (current_drag == mailboxinput.parentElement) {
       current_drag.classList.remove("indicate-border");

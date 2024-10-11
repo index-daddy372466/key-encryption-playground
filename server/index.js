@@ -57,11 +57,11 @@ const createId = (id, key, salt) => {
   const encryptId = cipher.update(id, "utf-8", "hex") + cipher.final("hex");
   // decrypt id to check
   // create decipher with (alg, key, iv)
-  const decipher = createDecipheriv("aes-256-gcm", key, salt);
-  // buffering the encrypted data as 'hex' and reading it as plain text, store into variable
-  let decrypted = decipher.update(Buffer.from(encryptId, "hex"), "utf-8");
-  // buffer from decipher
-  decrypted = Buffer.from(decrypted);
+  // const decipher = createDecipheriv("aes-256-gcm", key, salt);
+  // // buffering the encrypted data as 'hex' and reading it as plain text, store into variable
+  // let decrypted = decipher.update(Buffer.from(encryptId, "hex"), "utf-8");
+  // // buffer from decipher
+  // decrypted = Buffer.from(decrypted);
   // return encrypted id
   return encryptId;
 }; // store user into array (fake database) after creating their id
@@ -92,7 +92,7 @@ app.route("/api/encrypt").post((req, res) => {
       // allocate 32 bits for this scenario and use the public,hashed key
 
       req.session.key = Buffer.alloc(keylen, key);
-      iv = randomBytes(16);
+      iv = randomBytes([16,32,24][Math.floor(Math.random()*3)]);
       const cipher = createCipheriv(`aes-${aes}-gcm`, req.session.key, iv);
 
       console.log("initial vector (encrypt)");
@@ -162,6 +162,7 @@ app.route("/api/encrypt/public").post((req, res) => {
       );
       // convert encrypted data to hex
       let encData = encryptedData.toString('hex')
+      // return json encrypted data
       res.json({
         message: encData,
       });
@@ -199,22 +200,37 @@ app.route("/api/decrypt/:message").get((req, res) => {
 // sign data and create signature with private key
 app.route('/api/sign/:message').post((req,res)=>{
   const message = req.params.message
-  let sign = createSign('rsa-sha256')
-  sign.update(message)
-  let signature = sign.sign(privKey,'hex')
-  console.log(signature)
-  res.json({message:signature})
+  
+  try{
+    if(message){
+      let sign = createSign('rsa-sha256')
+      sign.update(message)
+      let signature = sign.sign(privKey,'hex')
+      console.log(signature)
+      res.json({message:signature})
+    }
+  } 
+  catch(err){
+    throw new Error(err)
+  }
 })
 // verify data for integrity with public key
 app.route('/api/verify/:signature').post((req,res)=>{
   const {plain} = req.body
   const {signature} = req.params
-  // ensure data is not tampered
-  const verify = createVerify('rsa-sha256')
-  verify.update(plain)
-  const isVerified = verify.verify(pubKey,signature,'hex')
-  console.log(isVerified)
-  res.json({bool:isVerified})
+  try{
+    if(signature){
+      // ensure data is not tampered
+    const verify = createVerify('rsa-sha256')
+    verify.update(plain)
+    const isVerified = verify.verify(pubKey,signature,'hex')
+    console.log(isVerified)
+    res.json({bool:isVerified})
+  }
+  } 
+  catch(err){
+    throw new Error(err)
+  }
 })
 
 
