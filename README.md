@@ -151,10 +151,11 @@ Asymmetric can be described as:<br>
 
 <img style='border:none;width:200px;transform:rotate(90deg);' src="./media/coy.jpg"/>
 
-Asymmetric Encryption, or Public Key Encryption takes place with a generated key pair, like we talked about above, & linking the keys together to decrypt the message.<br>Without confusion, asymmetric encryption differs from Signing and verifying data in that **Data is encrypted with a public Key & Decrypted with a public key**. <br>
+Asymmetric Encryption, or Public Key Encryption takes place with a generated key pair, like we talked about above, & linking the keys together to decrypt the message.<br>Without confusion, asymmetric encryption differs from Signing and verifying data in that **Data is encrypted with a public Key & Decrypted with a private key**. <br>
 ## Encrypt with Public Key
 
 <img style='border:none;' src="./media/asymmetric1.jpg"/>
+
 The module above displays one of the basic usees of a postal service. A message is created & dropped in the mail. After the mail is dropped, it transforms into encrypted data thanks to the **mailbox entry bin** or the public key.
 
 ```
