@@ -242,7 +242,7 @@ The module above displays a sender signing [**not encrypting**] their message wi
 
 <img style='border:none;' src="./media/signature3.jpg"/>
 
-The module above displays a sender verifying [**not decrypting**] their message with a **private key** to prove that the message came from them.
+The module above displays a sender verifying [**not decrypting**] their message with a **public key** to ensure the message maintains its integrity.
 
 ### Signature/Verification errors
 
@@ -268,8 +268,10 @@ const {plain} = req.body
   }
 ```
 <img style='border:none;' src="./media/signature5.jpg"/>
+
 The module above displays how data has **not been signed**
 <img style='border:none;' src="./media/signature6.jpg"/>
+
 The module above displays how the client requires **message/payload** to sign or update.
 </div>
 
