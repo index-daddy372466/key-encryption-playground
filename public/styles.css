@@ -798,6 +798,12 @@ animation: unlockmb 1.5s forwards ease;
             width:225px;
             height:200px;
         }
+        #wrapper2{
+            display:none;
+        }
+        #w2-title{
+            display:none;
+        }
 }
 
 /* ipad air & similar devices portrait */
@@ -831,12 +837,25 @@ animation: unlockmb 1.5s forwards ease;
         .shadow-enc{
             top:-7rem;
         }
+        
         .shadow-dec{
             bottom:-7rem;
         }
         form{
             width:275px;
             height:250px;
+        }
+        #wrapper2{
+            display:none;
+        }
+        #w2-title{
+            display:none;
+        }
+        #wrapper2{
+            display:none;
+        }
+        #w2-title{
+            display:none;
         }
 }
 /* surface duo & similar devices portrait */
@@ -854,8 +873,11 @@ animation: unlockmb 1.5s forwards ease;
         flex-direction: column;
         gap:1.25rem;
         }
-        #encrypt{
-            /* padding-top:8.36rem; */
+        #wrapper2{
+            display:none;
+        }
+        #w2-title{
+            display:none;
         }
         #wrapper{
             margin-left:2rem;
@@ -898,8 +920,11 @@ animation: unlockmb 1.5s forwards ease;
         flex-direction: row;
         gap:1.25rem;
         }
-        #encrypt{
-            /* padding-top:8.36rem; */
+        #wrapper2{
+            display:none;
+        }
+        #w2-title{
+            display:none;
         }
 
         #decrypt-para{
@@ -933,7 +958,12 @@ animation: unlockmb 1.5s forwards ease;
     .title{
         font-size:8px;
     }
-
+    #wrapper2{
+        display:none;
+    }
+    #w2-title{
+        display:none;
+    }
     #form-wrapper{
         display:flex;
         position:relative;
